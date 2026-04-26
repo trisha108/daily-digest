@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Digest</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1508;--paper:#faf7f0;--paper2:#f3ede0;--paper3:#ede5d0;
+  --gold:#c9933a;--gold-light:#e8b86d;--gold-pale:rgba(201,147,58,0.08);--gold-border:rgba(201,147,58,0.25);
+  --muted:#8a7d6a;--muted2:#b5a898;--accent:#2d5a3d;--rule:rgba(26,21,8,0.1);--danger:#c94040;
+  --theme-bg1:#faf7f0;--theme-bg2:#f3ede0;--theme-nav:#1a1508;--theme-accent:#c9933a;
+  --theme-flower-opacity:0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--theme-bg1);color:var(--ink);font-family:'Outfit',sans-serif;font-weight:300;min-height:100vh;transition:background 0.4s;}
+
+/* THEME BACKGROUNDS */
+body.theme-spring{
+  --theme-bg1:#fff0f5;--theme-bg2:#ffe4ef;--theme-nav:#4a1530;--theme-accent:#d4547a;
+  --gold:#d4547a;--gold-light:#e87fa0;--gold-pale:rgba(212,84,122,0.08);--gold-border:rgba(212,84,122,0.25);
+  --accent:#7a1f3d;--muted:#9a6070;--muted2:#c49aaa;--paper:#fff0f5;--paper2:#ffe4ef;--paper3:#ffd6e6;
+  --ink:#2d0a18;--rule:rgba(45,10,24,0.1);
+}
+body.theme-nature{
+  --theme-bg1:#f2f7f0;--theme-bg2:#e4edd8;--theme-nav:#1a2d10;--theme-accent:#4a7c3f;
+  --gold:#4a7c3f;--gold-light:#6fa660;--gold-pale:rgba(74,124,63,0.08);--gold-border:rgba(74,124,63,0.25);
+  --accent:#2d5a3d;--muted:#6a8060;--muted2:#a0b898;--paper:#f2f7f0;--paper2:#e4edd8;--paper3:#d6e4cc;
+  --ink:#0e1f0a;--rule:rgba(14,31,10,0.1);
+}
+body.theme-dark{
+  --theme-bg1:#0f0f14;--theme-bg2:#181820;--theme-nav:#08080d;--theme-accent:#a78bfa;
+  --gold:#a78bfa;--gold-light:#c4b0fc;--gold-pale:rgba(167,139,250,0.08);--gold-border:rgba(167,139,250,0.25);
+  --accent:#7c5cbf;--muted:#6b6880;--muted2:#4a4760;--paper:#0f0f14;--paper2:#181820;--paper3:#20202c;
+  --ink:#e8e6f0;--rule:rgba(232,230,240,0.08);
+}
+body.theme-flowers{
+  --theme-bg1:#fdf4fb;--theme-bg2:#f5e0f7;--theme-nav:#2d0a40;--theme-accent:#9b4dca;
+  --gold:#9b4dca;--gold-light:#b97fde;--gold-pale:rgba(155,77,202,0.08);--gold-border:rgba(155,77,202,0.25);
+  --accent:#6a1f9a;--muted:#8a6090;--muted2:#b8a0c0;--paper:#fdf4fb;--paper2:#f5e0f7;--paper3:#edd0f0;
+  --ink:#1f0a2d;--rule:rgba(31,10,45,0.1);
+}
+
+/* THEME FLORAL OVERLAY */
+.theme-overlay{position:fixed;bottom:0;left:0;right:0;height:340px;pointer-events:none;z-index:0;opacity:0;transition:opacity 0.5s;}
+body.theme-spring .theme-overlay,
+body.theme-flowers .theme-overlay{opacity:1;}
+body.theme-nature .nature-overlay{opacity:1;}
+
+/* SVG floral bottom fade */
+.floral-svg{position:absolute;bottom:0;left:0;right:0;width:100%;height:340px;}
+.nature-leaves{position:fixed;bottom:0;left:0;right:0;height:280px;pointer-events:none;z-index:0;opacity:0;transition:opacity 0.5s;}
+body.theme-nature .nature-leaves{opacity:1;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:var(--theme-nav);display:flex;align-items:center;justify-content:space-between;padding:0 36px;height:70px;border-bottom:2px solid var(--gold);transition:background 0.4s;}
+.nav-brand{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold);}
+.nav-brand span{font-style:italic;}
+.nav-tabs{display:flex;}
+.nav-tab{padding:0 28px;height:70px;display:flex;align-items:center;font-family:'DM Mono',monospace;font-size:16px;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.15s;}
+.nav-tab:hover{color:var(--gold-light);}
+.nav-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+/* PAGES */
+.page{display:none;position:relative;z-index:1;}
+.page.active{display:block;}
+
+/* MAIN */
+.main-wrap{max-width:840px;margin:0 auto;padding:48px 28px 120px;position:relative;z-index:1;}
+
+/* MASTHEAD */
+.masthead{text-align:center;padding:40px 0 28px;margin-bottom:0;position:relative;}
+.masthead::before{content:'';position:absolute;top:0;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);} .masthead::after{content:'';position:absolute;bottom:0;left:5%;right:5%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-border),transparent);}
+.masthead-title{font-family:'Cormorant Garamond',serif;font-size:60px;font-weight:300;letter-spacing:-2px;line-height:1;color:var(--ink);display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:0 16px;}
+.masthead-title span{font-style:italic;color:var(--gold);}
+.masthead-name-inline{font-family:'Cormorant Garamond',serif;font-size:60px;font-weight:300;letter-spacing:-2px;line-height:1;color:var(--gold);font-style:italic;}
+.masthead-date{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-top:10px;text-transform:uppercase;}
+
+/* STATUS BAR */
+.status-bar{display:flex;align-items:center;justify-content:space-between;padding:18px 0;margin-bottom:0;background:linear-gradient(180deg,var(--paper2),transparent);}
+.status-text{font-family:'DM Mono',monospace;font-size:15px;color:var(--muted);letter-spacing:1px;}
+.refresh-btn{font-family:'DM Mono',monospace;font-size:13px;color:var(--muted2);letter-spacing:1px;background:none;border:none;cursor:pointer;text-transform:uppercase;padding:0;transition:color 0.15s;}
+.refresh-btn:hover{color:var(--gold);}
+
+/* SECTIONS */
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.col-l{padding-right:32px;position:relative;} .col-l::after{content:'';position:absolute;top:10%;right:0;bottom:10%;width:1px;background:linear-gradient(180deg,transparent,var(--gold-border) 40%,var(--gold-border) 60%,transparent);}
+.col-r{padding-left:32px;}
+.section{padding:28px 0;position:relative;} .section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-border) 20%,var(--gold-border) 80%,transparent);}
+.section:last-child::after{display:none;}
+.section-full{padding:28px 0;position:relative;} .section-full::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-border) 20%,var(--gold-border) 80%,transparent);}
+
+.section-label{font-family:'DM Mono',monospace;font-size:16px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px;font-weight:500;}
+.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--gold-border),transparent);}
+
+/* CONTENT */
+.word-block{margin-bottom:18px;}
+.word-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--gold);line-height:1.1;}
+.word-pos{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin:3px 0 7px;}
+.word-def{font-size:15px;color:var(--ink);line-height:1.65;margin-bottom:8px;}
+.word-examples{list-style:none;}
+.word-examples li{font-size:13px;color:var(--muted);line-height:1.65;padding:3px 0 3px 12px;border-left:2px solid var(--gold-border);margin-bottom:5px;font-style:italic;}
+.content-block{font-size:14px;line-height:1.8;color:var(--ink);}
+.content-block .label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.q-link{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);border-bottom:1px solid rgba(45,90,61,0.3);text-decoration:none;margin-top:8px;transition:color 0.15s;}
+.q-link:hover{color:var(--gold);}
+.ai-item{padding:10px 0;border-bottom:1px dashed var(--rule);}
+.ai-item:last-child{border-bottom:none;}
+.ai-item-title{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:4px;}
+.ai-item-why{font-size:13px;color:var(--muted);line-height:1.6;}
+.skeleton{background:linear-gradient(90deg,var(--paper2) 25%,var(--paper3) 50%,var(--paper2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:3px;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-line{height:13px;margin-bottom:9px;}
+.skel-line.short{width:60%;}.skel-line.medium{width:80%;}
+.empty-state{text-align:center;padding:24px 0;color:var(--muted2);font-family:'DM Mono',monospace;font-size:15px;letter-spacing:2px;text-transform:uppercase;}
+.mark-done-btn{margin-top:10px;background:none;border:1px dashed var(--rule);border-radius:3px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;transition:all 0.15s;}
+.mark-done-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* SETTINGS */
+.backend-wrap{max-width:700px;margin:0 auto;padding:36px 28px 100px;position:relative;z-index:1;}
+.backend-header{margin-bottom:28px;border-bottom:1px solid var(--rule);padding-bottom:16px;}
+.backend-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--ink);}
+.backend-title span{font-style:italic;color:var(--gold);}
+.backend-sub{font-size:14px;color:var(--muted);margin-top:6px;line-height:1.6;}
+.be-section{margin-bottom:24px;}
+.be-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.be-section-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;flex:1;}
+.be-section-title::after{content:'';flex:1;height:1px;background:var(--gold-border);}
+.toggle-wrap{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:12px;}
+.toggle-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
+.toggle{position:relative;width:36px;height:20px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--paper3);border-radius:20px;transition:0.2s;border:1px solid var(--rule);}
+.toggle-slider::before{content:'';position:absolute;height:14px;width:14px;left:2px;top:2px;background:var(--muted2);border-radius:50%;transition:0.2s;}
+.toggle input:checked+.toggle-slider{background:var(--gold-pale);border-color:var(--gold);}
+.toggle input:checked+.toggle-slider::before{transform:translateX(16px);background:var(--gold);}
+.be-section-body{transition:all 0.2s;}
+.be-section-body.hidden{display:none;}
+.be-row{margin-bottom:14px;}
+.be-label{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:5px;display:flex;justify-content:space-between;align-items:center;}
+.be-hint{font-size:12px;color:var(--muted);font-weight:300;}
+.be-input{width:100%;background:white;border:1px solid var(--rule);border-radius:4px;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color 0.15s;}
+.be-input:focus{border-color:var(--gold);}
+.be-input::placeholder{color:var(--muted2);}
+textarea.be-input{resize:vertical;min-height:90px;font-size:12px;line-height:1.6;}
+.be-select{width:100%;background:white;border:1px solid var(--rule);border-radius:4px;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--ink);outline:none;cursor:pointer;}
+.be-save-btn{width:100%;padding:13px;background:var(--ink);color:var(--paper);border:none;border-radius:4px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;letter-spacing:0.3px;margin-bottom:10px;}
+.be-save-btn:hover{background:var(--gold);color:var(--ink);}
+
+/* THEME PICKER */
+.theme-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:4px;}
+.theme-swatch{border-radius:8px;padding:12px 8px;cursor:pointer;border:2px solid transparent;transition:all 0.15s;text-align:center;}
+.theme-swatch:hover{transform:translateY(-2px);}
+.theme-swatch.selected{border-color:var(--gold);}
+.theme-swatch-preview{height:36px;border-radius:5px;margin-bottom:6px;position:relative;overflow:hidden;}
+.theme-swatch-name{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+
+/* CUSTOM FIELDS */
+.custom-fields-list{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
+.custom-field-card{background:white;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;position:relative;animation:slideIn 0.2s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.custom-field-card .cf-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.custom-field-card .cf-name{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:500;}
+.cf-remove{background:none;border:none;cursor:pointer;color:var(--muted2);font-size:16px;line-height:1;padding:0 2px;transition:color 0.15s;}
+.cf-remove:hover{color:var(--danger);}
+.cf-inputs{display:grid;grid-template-columns:80px 1fr;gap:8px;margin-bottom:8px;}
+.cf-label-small{font-size:11px;color:var(--muted);margin-bottom:3px;}
+.add-field-btn{width:100%;padding:10px;background:transparent;border:1.5px dashed var(--gold-border);border-radius:4px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);cursor:pointer;transition:all 0.15s;margin-top:4px;}
+.add-field-btn:hover{background:var(--gold-pale);border-color:var(--gold);}
+
+/* RSS */
+.rss-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.rss-option{padding:9px 11px;border:1px solid var(--rule);border-radius:4px;cursor:pointer;transition:all 0.15s;background:white;}
+.rss-option:hover{border-color:var(--gold-border);background:var(--gold-pale);}
+.rss-option.selected{border-color:var(--gold);background:var(--gold-pale);}
+.rss-option-name{font-size:13px;font-weight:500;color:var(--ink);}
+.rss-option-url{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
+.info-box{background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:4px;padding:11px 14px;margin-bottom:12px;font-size:13px;color:var(--ink);line-height:1.6;}
+.info-box strong{font-weight:500;color:var(--gold);}
+.script-box{background:#0f0f14;border-radius:6px;padding:16px;font-family:'DM Mono',monospace;font-size:11px;color:#a0e6c0;line-height:1.7;white-space:pre-wrap;word-break:break-all;max-height:320px;overflow-y:auto;display:none;position:relative;margin-top:10px;}
+.script-box.show{display:block;}
+.copy-btn{position:sticky;top:0;float:right;background:var(--gold);color:var(--ink);border:none;padding:4px 12px;border-radius:3px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:500;cursor:pointer;margin-bottom:8px;}
+.saved-toast{position:fixed;bottom:24px;right:24px;background:var(--accent);color:white;padding:10px 20px;border-radius:4px;font-size:13px;font-family:'DM Mono',monospace;letter-spacing:1px;display:none;z-index:999;}
+
+@media(max-width:580px){
+  .columns{grid-template-columns:1fr;}
+  .col-l{border-right:none;padding-right:0;border-bottom:1px solid var(--rule);}
+  .col-r{padding-left:0;}
+  .masthead-title{font-size:34px;letter-spacing:-1px;}
+  .theme-grid{grid-template-columns:repeat(3,1fr);}
+  .rss-options,.cf-inputs{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body id="appBody">
+
+<!-- FLORAL OVERLAYS -->
+<div class="theme-overlay" id="floralOverlay">
+  <svg class="floral-svg" viewBox="0 0 1440 340" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice">
+    <defs>
+      <linearGradient id="fadeUp" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="white" stop-opacity="1"/>
+        <stop offset="60%" stop-color="white" stop-opacity="0"/>
+      </linearGradient>
+      <mask id="fadeMask"><rect width="1440" height="340" fill="url(#fadeUp)"/></mask>
+    </defs>
+    <g mask="url(#fadeMask)" id="floralGroup">
+      <!-- Spring pink flowers -->
+      <g id="springFlowers">
+        <!-- Large blooms -->
+        <circle cx="80" cy="300" r="18" fill="#ffb7cc" opacity="0.7"/>
+        <circle cx="80" cy="300" r="8" fill="#ff8fab" opacity="0.9"/>
+        <circle cx="62" cy="285" r="14" fill="#ffc8d8" opacity="0.6"/>
+        <circle cx="98" cy="282" r="14" fill="#ffc8d8" opacity="0.6"/>
+        <circle cx="80" cy="278" r="14" fill="#ffb7cc" opacity="0.6"/>
+        <circle cx="65" cy="310" r="14" fill="#ffd6e4" opacity="0.5"/>
+        <circle cx="95" cy="312" r="14" fill="#ffd6e4" opacity="0.5"/>
+
+        <circle cx="220" cy="320" r="16" fill="#ffadc5" opacity="0.65"/>
+        <circle cx="220" cy="320" r="7" fill="#ff85a1" opacity="0.9"/>
+        <circle cx="204" cy="307" r="12" fill="#ffc0d0" opacity="0.6"/>
+        <circle cx="236" cy="305" r="12" fill="#ffc0d0" opacity="0.6"/>
+        <circle cx="220" cy="302" r="12" fill="#ffadc5" opacity="0.6"/>
+        <circle cx="207" cy="330" r="12" fill="#ffd6e4" opacity="0.5"/>
+        <circle cx="233" cy="332" r="12" fill="#ffd6e4" opacity="0.5"/>
+
+        <circle cx="380" cy="310" r="20" fill="#ffb7cc" opacity="0.7"/>
+        <circle cx="380" cy="310" r="9" fill="#ff6b8a" opacity="0.85"/>
+        <circle cx="360" cy="293" r="15" fill="#ffc8d8" opacity="0.6"/>
+        <circle cx="400" cy="290" r="15" fill="#ffc8d8" opacity="0.6"/>
+        <circle cx="380" cy="287" r="15" fill="#ffb7cc" opacity="0.6"/>
+        <circle cx="363" cy="322" r="15" fill="#ffd6e4" opacity="0.5"/>
+        <circle cx="397" cy="325" r="15" fill="#ffd6e4" opacity="0.5"/>
+
+        <circle cx="560" cy="330" r="14" fill="#ffc4d6" opacity="0.6"/>
+        <circle cx="560" cy="330" r="6" fill="#ff8fab" opacity="0.8"/>
+        <circle cx="546" cy="318" r="11" fill="#ffd0e0" opacity="0.55"/>
+        <circle cx="574" cy="316" r="11" fill="#ffd0e0" opacity="0.55"/>
+        <circle cx="560" cy="314" r="11" fill="#ffc4d6" opacity="0.55"/>
+        <circle cx="549" cy="340" r="11" fill="#ffe0ec" opacity="0.45"/>
+        <circle cx="571" cy="341" r="11" fill="#ffe0ec" opacity="0.45"/>
+
+        <circle cx="700" cy="318" r="17" fill="#ffb0c8" opacity="0.68"/>
+        <circle cx="700" cy="318" r="7" fill="#ff6b8a" opacity="0.85"/>
+        <circle cx="682" cy="303" r="13" fill="#ffc4d6" opacity="0.6"/>
+        <circle cx="718" cy="301" r="13" fill="#ffc4d6" opacity="0.6"/>
+        <circle cx="700" cy="298" r="13" fill="#ffb0c8" opacity="0.6"/>
+        <circle cx="686" cy="330" r="13" fill="#ffd6e4" opacity="0.5"/>
+        <circle cx="714" cy="332" r="13" fill="#ffd6e4" opacity="0.5"/>
+
+        <circle cx="860" cy="325" r="15" fill="#ffc0d0" opacity="0.62"/>
+        <circle cx="860" cy="325" r="7" fill="#ff8fab" opacity="0.8"/>
+        <circle cx="845" cy="313" r="12" fill="#ffd0e0" opacity="0.55"/>
+        <circle cx="875" cy="311" r="12" fill="#ffd0e0" opacity="0.55"/>
+        <circle cx="860" cy="309" r="12" fill="#ffc0d0" opacity="0.55"/>
+        <circle cx="848" cy="336" r="12" fill="#ffe0ec" opacity="0.45"/>
+        <circle cx="872" cy="338" r="12" fill="#ffe0ec" opacity="0.45"/>
+
+        <circle cx="1020" cy="312" r="19" fill="#ffadc5" opacity="0.7"/>
+        <circle cx="1020" cy="312" r="8" fill="#ff6b8a" opacity="0.85"/>
+        <circle cx="1001" cy="296" r="14" fill="#ffbfd0" opacity="0.62"/>
+        <circle cx="1039" cy="294" r="14" fill="#ffbfd0" opacity="0.62"/>
+        <circle cx="1020" cy="291" r="14" fill="#ffadc5" opacity="0.62"/>
+        <circle cx="1005" cy="324" r="14" fill="#ffd4e4" opacity="0.5"/>
+        <circle cx="1035" cy="326" r="14" fill="#ffd4e4" opacity="0.5"/>
+
+        <circle cx="1180" cy="320" r="16" fill="#ffb7cc" opacity="0.66"/>
+        <circle cx="1180" cy="320" r="7" fill="#ff8fab" opacity="0.85"/>
+        <circle cx="1163" cy="306" r="12" fill="#ffc8d8" opacity="0.58"/>
+        <circle cx="1197" cy="304" r="12" fill="#ffc8d8" opacity="0.58"/>
+        <circle cx="1180" cy="301" r="12" fill="#ffb7cc" opacity="0.58"/>
+        <circle cx="1166" cy="332" r="12" fill="#ffd6e4" opacity="0.48"/>
+        <circle cx="1194" cy="334" r="12" fill="#ffd6e4" opacity="0.48"/>
+
+        <circle cx="1360" cy="308" r="17" fill="#ffb0c8" opacity="0.68"/>
+        <circle cx="1360" cy="308" r="7" fill="#ff6b8a" opacity="0.85"/>
+        <circle cx="1342" cy="293" r="13" fill="#ffc4d6" opacity="0.6"/>
+        <circle cx="1378" cy="291" r="13" fill="#ffc4d6" opacity="0.6"/>
+        <circle cx="1360" cy="288" r="13" fill="#ffb0c8" cy="288" r="13"/>
+        <circle cx="1346" cy="320" r="13" fill="#ffd6e4" opacity="0.5"/>
+        <circle cx="1374" cy="322" r="13" fill="#ffd6e4" opacity="0.5"/>
+
+        <!-- stems -->
+        <line x1="80" y1="340" x2="80" y2="300" stroke="#9ecf88" stroke-width="2" opacity="0.5"/>
+        <line x1="220" y1="340" x2="220" y2="320" stroke="#9ecf88" stroke-width="2" opacity="0.5"/>
+        <line x1="380" y1="340" x2="380" y2="310" stroke="#9ecf88" stroke-width="2" opacity="0.5"/>
+        <line x1="560" y1="340" x2="560" y2="330" stroke="#9ecf88" stroke-width="2" opacity="0.4"/>
+        <line x1="700" y1="340" x2="700" y2="318" stroke="#9ecf88" stroke-width="2" opacity="0.5"/>
+        <line x1="860" y1="340" x2="860" y2="325" stroke="#9ecf88" stroke-width="2" opacity="0.4"/>
+        <line x1="1020" y1="340" x2="1020" y2="312" stroke="#9ecf88" stroke-width="2" opacity="0.5"/>
+        <line x1="1180" y1="340" x2="1180" y2="320" stroke="#9ecf88" stroke-width="2" opacity="0.4"/>
+        <line x1="1360" y1="340" x2="1360" y2="308" stroke="#9ecf88" stroke-width="2" opacity="0.5"/>
+
+        <!-- small bud accents -->
+        <circle cx="150" cy="335" r="7" fill="#ffccd8" opacity="0.5"/>
+        <circle cx="150" cy="335" r="3" fill="#ffaab8" opacity="0.7"/>
+        <circle cx="310" cy="338" r="6" fill="#ffd0e0" opacity="0.45"/>
+        <circle cx="470" cy="334" r="8" fill="#ffbfce" opacity="0.5"/>
+        <circle cx="630" cy="336" r="6" fill="#ffd0e0" opacity="0.45"/>
+        <circle cx="780" cy="338" r="7" fill="#ffccd8" opacity="0.5"/>
+        <circle cx="940" cy="335" r="6" fill="#ffd0e0" opacity="0.45"/>
+        <circle cx="1100" cy="337" r="8" fill="#ffbfce" opacity="0.5"/>
+        <circle cx="1270" cy="336" r="6" fill="#ffd0e0" opacity="0.45"/>
+        <circle cx="1430" cy="338" r="7" fill="#ffccd8" opacity="0.5"/>
+      </g>
+    </g>
+    <!-- fade to bg at top -->
+    <rect width="1440" height="340" fill="url(#fadeUp)" opacity="0.85"/>
+  </svg>
+</div>
+
+<!-- NATURE LEAVES OVERLAY -->
+<div class="nature-leaves" id="natureLeavesOverlay">
+  <svg viewBox="0 0 1440 280" xmlns="http://www.w3.org/2000/svg" width="100%" height="280" preserveAspectRatio="xMidYMax slice">
+    <defs>
+      <linearGradient id="fadeUpG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="white" stop-opacity="1"/>
+        <stop offset="55%" stop-color="white" stop-opacity="0"/>
+      </linearGradient>
+      <mask id="fadeMaskG"><rect width="1440" height="280" fill="url(#fadeUpG)"/></mask>
+    </defs>
+    <g mask="url(#fadeMaskG)">
+      <ellipse cx="60" cy="270" rx="40" ry="20" fill="#7ab648" opacity="0.55" transform="rotate(-20,60,270)"/>
+      <ellipse cx="160" cy="278" rx="50" ry="18" fill="#5a9e30" opacity="0.5" transform="rotate(10,160,278)"/>
+      <ellipse cx="280" cy="265" rx="38" ry="16" fill="#8abf50" opacity="0.5" transform="rotate(-15,280,265)"/>
+      <ellipse cx="420" cy="275" rx="55" ry="20" fill="#6aaf3a" opacity="0.5" transform="rotate(8,420,275)"/>
+      <ellipse cx="560" cy="268" rx="42" ry="17" fill="#7ab648" opacity="0.45" transform="rotate(-12,560,268)"/>
+      <ellipse cx="700" cy="272" rx="48" ry="19" fill="#5a9e30" opacity="0.5" transform="rotate(15,700,272)"/>
+      <ellipse cx="840" cy="267" rx="38" ry="16" fill="#8abf50" opacity="0.45" transform="rotate(-8,840,267)"/>
+      <ellipse cx="980" cy="274" rx="52" ry="20" fill="#6aaf3a" opacity="0.5" transform="rotate(12,980,274)"/>
+      <ellipse cx="1120" cy="269" rx="44" ry="18" fill="#7ab648" opacity="0.5" transform="rotate(-18,1120,269)"/>
+      <ellipse cx="1260" cy="275" rx="50" ry="19" fill="#5a9e30" opacity="0.45" transform="rotate(6,1260,275)"/>
+      <ellipse cx="1400" cy="268" rx="40" ry="17" fill="#8abf50" opacity="0.5" transform="rotate(-10,1400,268)"/>
+    </g>
+  </svg>
+</div>
+
+<div class="saved-toast" id="toast"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">Daily <span>Digest</span></div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="switchPage('main')">Today</div>
+    <div class="nav-tab" onclick="switchPage('backend')">Customise Settings</div>
+  </div>
+</nav>
+
+<!-- ===== MAIN PAGE ===== -->
+<div class="page active" id="page-main">
+  <div class="main-wrap">
+    <div class="masthead">
+      <div class="masthead-title"><span class="masthead-name-inline" id="mastheadName"></span>Daily <span>Digest</span></div>
+      <div class="masthead-date" id="dateDisplay"></div>
+    </div>
+    <div class="status-bar">
+      <div class="status-text" id="genStatus">Loading today's content...</div>
+      <button class="refresh-btn" onclick="forceRefresh()" title="Force regenerate today's content">Refresh</button>
+    </div>
+
+    <div class="columns">
+      <div class="col-l">
+        <div class="section">
+          <div class="section-label">Vocabulary</div>
+          <div id="vocabContent"><div class="empty-state">Loading...</div></div>
+        </div>
+      </div>
+      <div class="col-r">
+        <div class="section">
+          <div class="section-label">CEO Habit</div>
+          <div id="ceoContent"><div class="empty-state">Loading...</div></div>
+        </div>
+        <div class="section">
+          <div class="section-label">AI Updates</div>
+          <div id="aiContent"><div class="empty-state">Loading...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="mainBuiltins"></div>
+    <div id="mainCustomSections"></div>
+  </div>
+</div>
+
+<!-- ===== CUSTOMISE SETTINGS PAGE ===== -->
+<div class="page" id="page-backend">
+  <div class="backend-wrap">
+    <div class="backend-header">
+      <div class="backend-title">Customise <span>Settings</span></div>
+      <div class="backend-sub">Toggle sections on or off, pick a theme, add custom categories. Each person sets up their own version.</div>
+    </div>
+
+    <!-- ACCOUNT -->
+    <div class="be-section">
+      <div class="be-section-header"><div class="be-section-title">Your Account</div></div>
+      <div class="be-row">
+        <div class="be-label">Your name <span class="be-hint">Shown on the main page header</span></div>
+        <input class="be-input" type="text" id="cfg_name" placeholder="e.g. Trisha"/>
+      </div>
+      <div class="be-row">
+        <div class="be-label">Email address <span class="be-hint">Where your daily email is sent</span></div>
+        <input class="be-input" type="email" id="cfg_email" placeholder="you@gmail.com"/>
+      </div>
+      <div class="be-row">
+        <div class="be-label">Anthropic API Key <span class="be-hint">From console.anthropic.com</span></div>
+        <input class="be-input" type="password" id="cfg_apikey" placeholder="sk-ant-..."/>
+      </div>
+      <div class="be-row">
+        <div class="be-label">Send time <span class="be-hint">Daily email trigger time</span></div>
+        <select class="be-select" id="cfg_time">
+          <option value="5">5:00 AM</option>
+          <option value="6">6:00 AM</option>
+          <option value="7">7:00 AM</option>
+          <option value="8" selected>8:00 AM</option>
+          <option value="9">9:00 AM</option>
+          <option value="10">10:00 AM</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- THEME -->
+    <div class="be-section">
+      <div class="be-section-header"><div class="be-section-title">Theme</div></div>
+      <div class="theme-grid" id="themeGrid">
+        <div class="theme-swatch selected" data-theme="" onclick="selectTheme(this,'')">
+          <div class="theme-swatch-preview" style="background:linear-gradient(180deg,#faf7f0,#f3ede0);"></div>
+          <div class="theme-swatch-name">Classic</div>
+        </div>
+        <div class="theme-swatch" data-theme="theme-spring" onclick="selectTheme(this,'theme-spring')">
+          <div class="theme-swatch-preview" style="background:linear-gradient(180deg,#fff0f5,#ffd6e4);position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:18px;line-height:1;">🌸</div>
+          </div>
+          <div class="theme-swatch-name">Spring</div>
+        </div>
+        <div class="theme-swatch" data-theme="theme-nature" onclick="selectTheme(this,'theme-nature')">
+          <div class="theme-swatch-preview" style="background:linear-gradient(180deg,#f2f7f0,#d6e4cc);position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:18px;line-height:1;">🌿</div>
+          </div>
+          <div class="theme-swatch-name">Nature</div>
+        </div>
+        <div class="theme-swatch" data-theme="theme-dark" onclick="selectTheme(this,'theme-dark')">
+          <div class="theme-swatch-preview" style="background:linear-gradient(180deg,#0f0f14,#181820);"></div>
+          <div class="theme-swatch-name">Dark</div>
+        </div>
+        <div class="theme-swatch" data-theme="theme-flowers" onclick="selectTheme(this,'theme-flowers')">
+          <div class="theme-swatch-preview" style="background:linear-gradient(180deg,#fdf4fb,#edd0f0);position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:18px;line-height:1;">💜</div>
+          </div>
+          <div class="theme-swatch-name">Flowers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI NEWS -->
+    <div class="be-section">
+      <div class="be-section-header"><div class="be-section-title">AI News Source</div></div>
+      <div class="info-box"><strong>How it works:</strong> Pick a free RSS feed — headlines are fetched automatically, no extra account needed.</div>
+      <div class="rss-options" id="rssOptions">
+        <div class="rss-option selected" onclick="selectRSS(this,'https://techcrunch.com/category/artificial-intelligence/feed/')">
+          <div class="rss-option-name">TechCrunch AI</div>
+          <div class="rss-option-url">techcrunch.com</div>
+        </div>
+        <div class="rss-option" onclick="selectRSS(this,'https://feeds.feedburner.com/TheVergeAI')">
+          <div class="rss-option-name">The Verge AI</div>
+          <div class="rss-option-url">theverge.com</div>
+        </div>
+        <div class="rss-option" onclick="selectRSS(this,'https://www.artificialintelligence-news.com/feed/')">
+          <div class="rss-option-name">AI News</div>
+          <div class="rss-option-url">artificialintelligence-news.com</div>
+        </div>
+        <div class="rss-option" onclick="selectRSS(this,'https://venturebeat.com/category/ai/feed/')">
+          <div class="rss-option-name">VentureBeat AI</div>
+          <div class="rss-option-url">venturebeat.com</div>
+        </div>
+      </div>
+      <input class="be-input" id="cfg_rss" placeholder="Or paste any custom RSS feed URL..."/>
+    </div>
+
+    <!-- BUILT-IN SECTIONS -->
+    <div class="be-section">
+      <div class="be-section-header"><div class="be-section-title">Built-in Question Sections</div></div>
+      <div class="info-box"><strong>Toggle any section off</strong> to hide it from your daily digest. Always reversible.</div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="background:white;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+          <div class="be-section-header" style="margin-bottom:0;">
+            <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);font-weight:500;">Problem Solving</div>
+            <div class="toggle-wrap"><span class="toggle-label" id="lbl_problem">On</span><label class="toggle"><input type="checkbox" id="tog_problem" checked onchange="toggleSection('problem')"><span class="toggle-slider"></span></label></div>
+          </div>
+          <div id="body_problem" class="be-section-body" style="margin-top:12px;">
+            <div class="be-hint" style="margin-bottom:6px;font-size:12px;">One URL per line. One is picked randomly each day.</div>
+            <textarea class="be-input" id="cfg_problems" placeholder="https://hackerrank.com/challenges/example&#10;https://projecteuler.net/problem=1&#10;https://leetcode.com/problems/two-sum/"></textarea>
+          </div>
+        </div>
+
+        <div style="background:white;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+          <div class="be-section-header" style="margin-bottom:0;">
+            <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);font-weight:500;">SQL Questions</div>
+            <div class="toggle-wrap"><span class="toggle-label" id="lbl_sql">On</span><label class="toggle"><input type="checkbox" id="tog_sql" checked onchange="toggleSection('sql')"><span class="toggle-slider"></span></label></div>
+          </div>
+          <div id="body_sql" class="be-section-body" style="margin-top:12px;">
+            <div class="be-hint" style="margin-bottom:6px;font-size:12px;">One URL per line. Solved ones are tracked automatically.</div>
+            <textarea class="be-input" id="cfg_sql" placeholder="https://leetcode.com/problems/recyclable-and-low-fat-products/&#10;https://leetcode.com/problems/find-customer-referee/"></textarea>
+          </div>
+        </div>
+
+        <div style="background:white;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+          <div class="be-section-header" style="margin-bottom:0;">
+            <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);font-weight:500;">Python Questions</div>
+            <div class="toggle-wrap"><span class="toggle-label" id="lbl_python">On</span><label class="toggle"><input type="checkbox" id="tog_python" checked onchange="toggleSection('python')"><span class="toggle-slider"></span></label></div>
+          </div>
+          <div id="body_python" class="be-section-body" style="margin-top:12px;">
+            <div class="be-hint" style="margin-bottom:6px;font-size:12px;">One URL per line. Solved ones are tracked automatically.</div>
+            <textarea class="be-input" id="cfg_python" placeholder="https://datalemur.com/questions/completed-trades&#10;https://datalemur.com/questions/matching-skills"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOM FIELDS -->
+    <div class="be-section">
+      <div class="be-section-header"><div class="be-section-title">Custom Question Categories</div></div>
+      <div class="info-box"><strong>Add anything you want</strong> — Java, System Design, Finance, Excel. Each gets its own section with the same random-pick and solved-tracking logic.</div>
+      <div class="custom-fields-list" id="customFieldsList"></div>
+      <button class="add-field-btn" onclick="addCustomField()">+ Add custom category</button>
+    </div>
+
+    <div style="margin-top:8px;">
+      <button class="be-save-btn" onclick="saveSettings()">Save all settings</button>
+    </div>
+
+    <!-- APPS SCRIPT -->
+    <div class="be-section" style="margin-top:24px;">
+      <div class="be-section-header"><div class="be-section-title">Email Automation</div></div>
+      <div class="info-box"><strong>One-time setup:</strong> Generate your personalised Apps Script, paste at script.google.com, set a daily trigger.</div>
+      <button class="be-save-btn" style="background:var(--paper2);color:var(--ink);border:1px solid var(--rule);" onclick="generateScript()">Generate My Apps Script</button>
+      <div class="script-box" id="scriptBox">
+        <button class="copy-btn" onclick="copyScript()">Copy all</button>
+        <span id="scriptContent"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== STORAGE =====================
+function ls_get(k,d){try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d;}catch(e){return d;}}
+function ls_set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+// ===================== DATE KEY (YYYY-MM-DD) =====================
+function todayKey(){
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+// ===================== 24HR CACHE =====================
+function getCached(key){
+  const entry=ls_get('cache_'+key,null);
+  if(!entry)return null;
+  if(entry.date!==todayKey())return null; // expired — new day
+  return entry.value;
+}
+function setCache(key,value){
+  ls_set('cache_'+key,{date:todayKey(),value});
+}
+
+// ===================== DATE DISPLAY =====================
+document.getElementById('dateDisplay').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+// ===================== NAME ON MASTHEAD =====================
+function updateMasthead(){
+  const name=ls_get('cfg_name','').trim();
+  const el=document.getElementById('mastheadName');
+  el.textContent=name?name+"'s ":'';
+}
+
+// ===================== THEME =====================
+function applyTheme(theme){
+  const body=document.getElementById('appBody');
+  body.className=theme||'';
+}
+function selectTheme(el,theme){
+  document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+  ls_set('cfg_theme',theme);
+  applyTheme(theme);
+}
+
+// ===================== NAV =====================
+function switchPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',['main','backend'][i]===name));
+  document.getElementById('page-'+name).classList.add('active');
+  if(name==='backend'){loadSettings();renderCustomFieldsUI();}
+}
+
+// ===================== TOAST =====================
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';
+  setTimeout(()=>t.style.display='none',2500);
+}
+
+// ===================== TOGGLE SECTIONS =====================
+function toggleSection(key){
+  const cb=document.getElementById('tog_'+key);
+  const body=document.getElementById('body_'+key);
+  const lbl=document.getElementById('lbl_'+key);
+  const on=cb.checked;
+  body.classList.toggle('hidden',!on);
+  lbl.textContent=on?'On':'Off';
+  ls_set('sec_enabled_'+key,on);
+}
+function isSectionOn(key){return ls_get('sec_enabled_'+key,true);}
+
+// ===================== SETTINGS =====================
+let selectedRSS='https://techcrunch.com/category/artificial-intelligence/feed/';
+
+function loadSettings(){
+  ['name','email','apikey','time','rss','problems','sql','python'].forEach(f=>{
+    const el=document.getElementById('cfg_'+f);
+    if(!el)return;
+    const v=ls_get('cfg_'+f,'');
+    if(v)el.value=v;
+  });
+  ['problem','sql','python'].forEach(k=>{
+    const on=isSectionOn(k);
+    const cb=document.getElementById('tog_'+k);
+    const body=document.getElementById('body_'+k);
+    const lbl=document.getElementById('lbl_'+k);
+    if(cb){cb.checked=on;body.classList.toggle('hidden',!on);lbl.textContent=on?'On':'Off';}
+  });
+  const rss=ls_get('cfg_rss','');
+  if(rss){selectedRSS=rss;document.getElementById('cfg_rss').value=rss;}
+  // restore theme swatches
+  const savedTheme=ls_get('cfg_theme','');
+  document.querySelectorAll('.theme-swatch').forEach(s=>{
+    s.classList.toggle('selected',s.dataset.theme===savedTheme);
+  });
+}
+
+function saveSettings(){
+  ['name','email','apikey','time','rss','problems','sql','python'].forEach(f=>{
+    const el=document.getElementById('cfg_'+f);
+    if(el)ls_set('cfg_'+f,el.value);
+  });
+  saveCustomFields();
+  updateMasthead();
+  showToast('Settings saved');
+}
+
+function selectRSS(el,url){
+  document.querySelectorAll('.rss-option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');selectedRSS=url;
+  document.getElementById('cfg_rss').value=url;
+}
+
+// ===================== CUSTOM FIELDS =====================
+function getCustomFields(){return ls_get('custom_fields',[]);}
+function saveCustomFields(){
+  const list=[];
+  document.querySelectorAll('.custom-field-card').forEach(card=>{
+    const id=card.dataset.id;
+    const name=card.querySelector('.cf-name-input').value.trim();
+    const icon=card.querySelector('.cf-icon-input').value.trim()||'—';
+    const links=card.querySelector('.cf-links-input').value.trim();
+    if(name)list.push({id,name,icon,links});
+  });
+  ls_set('custom_fields',list);return list;
+}
+function addCustomField(){
+  const fields=getCustomFields();
+  const id='cf_'+Date.now();
+  fields.push({id,name:'',icon:'—',links:''});
+  ls_set('custom_fields',fields);
+  renderCustomFieldsUI();
+  setTimeout(()=>{const el=document.querySelector(`[data-id="${id}"]`);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},100);
+}
+function removeCustomField(id){
+  ls_set('custom_fields',getCustomFields().filter(f=>f.id!==id));
+  renderCustomFieldsUI();showToast('Category removed');
+}
+function renderCustomFieldsUI(){
+  const fields=getCustomFields();
+  const container=document.getElementById('customFieldsList');
+  if(!fields.length){container.innerHTML='';return;}
+  container.innerHTML=fields.map(f=>`
+    <div class="custom-field-card" data-id="${f.id}">
+      <div class="cf-header">
+        <div class="cf-name">${f.name||'New Category'}</div>
+        <button class="cf-remove" onclick="removeCustomField('${f.id}')">x</button>
+      </div>
+      <div class="cf-inputs">
+        <div>
+          <div class="cf-label-small">Short label</div>
+          <input class="be-input cf-icon-input" value="${f.icon||''}" placeholder="e.g. Java" style="font-size:13px;" oninput="liveUpdateCard(this)"/>
+        </div>
+        <div>
+          <div class="cf-label-small">Category name</div>
+          <input class="be-input cf-name-input" value="${f.name||''}" placeholder="e.g. Java Challenges, System Design..." oninput="liveUpdateCard(this)"/>
+        </div>
+      </div>
+      <div class="cf-label-small" style="margin-bottom:4px;">Links (one per line)</div>
+      <textarea class="be-input cf-links-input" placeholder="https://example.com/question-1&#10;https://example.com/question-2" style="min-height:70px;">${f.links||''}</textarea>
+    </div>`).join('');
+}
+function liveUpdateCard(input){
+  const card=input.closest('.custom-field-card');
+  const name=card.querySelector('.cf-name-input').value.trim()||'New Category';
+  card.querySelector('.cf-name').textContent=name;
+}
+
+// ===================== HELPERS =====================
+function parseLinks(text){return(text||'').split('\n').map(l=>l.trim()).filter(l=>l.startsWith('http'));}
+function pickRandom(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function shortenUrl(url){try{const u=new URL(url);return u.hostname.replace('www.','')+u.pathname.slice(0,28)+(u.pathname.length>28?'...':'');}catch(e){return url.slice(0,38);}}
+function extract(text,key){const m=text.match(new RegExp(key+':\\s*(.+)'));return m?m[1].trim():'';}
+function showSkeleton(id){const el=document.getElementById(id);if(el)el.innerHTML='<div class="skel-line skeleton medium"></div><div class="skel-line skeleton short"></div><div class="skel-line skeleton medium"></div><div class="skel-line skeleton short"></div>';}
+function getApiKey(){return ls_get('cfg_apikey','')||'';}
+
+async function callClaude(prompt,useSearch=false){
+  const key=getApiKey();
+  if(!key)throw new Error('No API key — go to Customise Settings.');
+  const body={model:'claude-sonnet-4-5',max_tokens:1200,messages:[{role:'user',content:prompt}]};
+  if(useSearch)body.tools=[{type:'web_search_20250305',name:'web_search'}];
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},
+    body:JSON.stringify(body)
+  });
+  const data=await res.json();
+  if(data.error)throw new Error(data.error.message);
+  for(const block of data.content){if(block.type==='text'&&block.text.length>20)return block.text;}
+  return 'Content unavailable.';
+}
+
+// ===================== AUTO-POPULATE ON LOAD =====================
+async function autoPopulate(force=false){
+  const status=document.getElementById('genStatus');
+  // Check if already generated today
+  const cached=getCached('full_generated');
+  if(cached&&!force){
+    status.textContent='Loaded from today\'s cache — '+cached.time;
+    renderFromCache();
+    return;
+  }
+  status.textContent='Generating today\'s content...';
+  renderMainBuiltins();
+  renderMainCustomSections();
+  const steps=[
+    {label:'Generating vocabulary...',fn:genVocab},
+    {label:'Fetching AI news...',fn:genAI},
+    {label:'Generating CEO habit...',fn:genCEO},
+    {label:'Picking your questions...',fn:genQuestions},
+    {label:'Loading custom sections...',fn:genCustomSections},
+  ];
+  try{
+    for(const step of steps){status.textContent=step.label;await step.fn();}
+    const timeStr=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    setCache('full_generated',{time:timeStr});
+    status.textContent='Generated at '+timeStr+' — refreshes tomorrow';
+  }catch(e){
+    status.textContent='Error: '+e.message+' — check API key in Settings';
+  }
+}
+
+function forceRefresh(){
+  ls_set('cache_full_generated',null);
+  ['cache_vocab','cache_ceo','cache_ai'].forEach(k=>localStorage.removeItem(k));
+  autoPopulate(true);
+}
+
+function renderFromCache(){
+  // restore each section from its own cache
+  const vocab=getCached('vocab');
+  if(vocab)renderVocab(vocab);
+  const ceo=getCached('ceo');
+  if(ceo)renderCEO(ceo);
+  const ai=getCached('ai');
+  if(ai)renderAI(ai);
+  renderMainBuiltins();
+  genQuestions();
+  renderMainCustomSections();
+  genCustomSections();
+}
+
+// ===================== VOCAB =====================
+async function genVocab(){
+  showSkeleton('vocabContent');
+  const cached=getCached('vocab');
+  if(cached){renderVocab(cached);return;}
+  const text=await callClaude(
+    'Generate exactly 2 advanced business vocabulary words perfect for interviews and professional conversations. '+
+    'For each word output in this exact format:\nWORD: [word]\nPOS: [part of speech]\nDEF: [1-2 sentence definition]\nEX1: [example sentence]\nEX2: [example sentence]\nEX3: [example sentence]\n---\nNo extra commentary. Start immediately.'
+  );
+  setCache('vocab',text);
+  renderVocab(text);
+}
+function renderVocab(text){
+  const words=text.split('---').map(b=>b.trim()).filter(Boolean).slice(0,2).map(block=>{
+    const get=k=>{const m=block.match(new RegExp(k+':\\s*(.+)'));return m?m[1].trim():'';};
+    return{word:get('WORD'),pos:get('POS'),def:get('DEF'),examples:[get('EX1'),get('EX2'),get('EX3')].filter(Boolean)};
+  });
+  document.getElementById('vocabContent').innerHTML=words.map(w=>`
+    <div class="word-block">
+      <div class="word-name">${w.word}</div>
+      <div class="word-pos">${w.pos}</div>
+      <div class="word-def">${w.def}</div>
+      <ul class="word-examples">${w.examples.map(e=>`<li>${e}</li>`).join('')}</ul>
+    </div>`).join('<hr style="border:none;border-top:1px dashed var(--rule);margin:12px 0">');
+}
+
+// ===================== AI NEWS =====================
+async function genAI(){
+  showSkeleton('aiContent');
+  const cached=getCached('ai');
+  if(cached){renderAI(cached);return;}
+  try{
+    const text=await callClaude(
+      'Search for the top 3 AI news stories from the last 24 hours. '+
+      'For each story output in this exact format:\nTITLE: [headline in under 10 words]\nWHY: [one sentence on why it matters]\n---\nNo intro. Start immediately with TITLE.',true);
+    setCache('ai',text);
+    renderAI(text);
+  }catch(e){document.getElementById('aiContent').innerHTML=`<div class="content-block" style="color:var(--muted)">Could not fetch: ${e.message}</div>`;}
+}
+function renderAI(text){
+  const items=text.split('---').map(b=>b.trim()).filter(Boolean).slice(0,3).map(block=>{
+    const get=k=>{const m=block.match(new RegExp(k+':\\s*(.+)'));return m?m[1].trim():'';};
+    return{title:get('TITLE'),why:get('WHY')};
+  }).filter(i=>i.title);
+  document.getElementById('aiContent').innerHTML=items.length
+    ?items.map(i=>`<div class="ai-item"><div class="ai-item-title">${i.title}</div><div class="ai-item-why">${i.why}</div></div>`).join('')
+    :`<div class="content-block">${text}</div>`;
+}
+
+// ===================== CEO =====================
+async function genCEO(){
+  showSkeleton('ceoContent');
+  const cached=getCached('ceo');
+  if(cached){renderCEO(cached);return;}
+  const text=await callClaude(
+    'Share one powerful daily habit of a well-known CEO or founder. '+
+    'Output in this exact format:\nWHO: [name and company]\nHABIT: [what they do and when — 2 sentences]\nRESULT: [documented outcome — 1 sentence]\nTIP: [how to adopt it today — 1 sentence]\nNo extra text. Start immediately.');
+  setCache('ceo',text);
+  renderCEO(text);
+}
+function renderCEO(text){
+  const who=extract(text,'WHO'),habit=extract(text,'HABIT'),result=extract(text,'RESULT'),tip=extract(text,'TIP');
+  document.getElementById('ceoContent').innerHTML=`
+    <div class="content-block">
+      <div class="label">${who||'Leader'}</div>
+      <p style="margin-bottom:10px">${habit||text}</p>
+      ${result?`<p style="margin-bottom:8px;color:var(--accent);font-size:13px">Result: ${result}</p>`:''}
+      ${tip?`<p style="font-size:13px;color:var(--muted);border-left:2px solid var(--gold-border);padding-left:10px;font-style:italic">${tip}</p>`:''}
+    </div>`;
+}
+
+// ===================== BUILT-IN QUESTIONS =====================
+function renderMainBuiltins(){
+  const sections=[];
+  if(isSectionOn('problem'))sections.push({id:'problem',label:'Problem Solving',contentId:'problemContent'});
+  if(isSectionOn('sql'))sections.push({id:'sql',label:'SQL',contentId:'sqlContent'});
+  if(isSectionOn('python'))sections.push({id:'python',label:'Python',contentId:'pyContent'});
+  const container=document.getElementById('mainBuiltins');
+  if(!sections.length){container.innerHTML='';return;}
+  const cols=sections.map(s=>`<div><div class="section-label">${s.label}</div><div id="${s.contentId}"><div class="empty-state">Loading...</div></div></div>`).join('');
+  container.innerHTML=`<div class="section-full"><div style="display:grid;grid-template-columns:repeat(${sections.length},1fr);gap:22px;">${cols}</div></div>`;
+}
+
+async function genQuestions(){
+  if(isSectionOn('problem')){
+    const links=parseLinks(ls_get('cfg_problems',''));
+    const url=links.length?pickRandom(links):'https://leetcode.com/problemset/';
+    const el=document.getElementById('problemContent');
+    if(el)el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">Today's challenge</p><a class="q-link" href="${url}" target="_blank">${shortenUrl(url)} &rarr;</a></div>`;
+  }
+  if(isSectionOn('sql')){
+    const solved=ls_get('solved_sql',[]);
+    const links=parseLinks(ls_get('cfg_sql',DEFAULT_SQL));
+    const unsolved=links.filter(u=>!solved.includes(u));
+    const url=unsolved.length?pickRandom(unsolved):(links[0]||'https://leetcode.com/study-plan/sql-free-50/');
+    const el=document.getElementById('sqlContent');
+    if(el)el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">${unsolved.length} remaining</p><a class="q-link" href="${url}" target="_blank">${shortenUrl(url)} &rarr;</a><br><button class="mark-done-btn" onclick="markSolved('sql','${url}')">Mark done</button></div>`;
+  }
+  if(isSectionOn('python')){
+    const solved=ls_get('solved_py',[]);
+    const links=parseLinks(ls_get('cfg_python',DEFAULT_PY));
+    const unsolved=links.filter(u=>!solved.includes(u));
+    const url=unsolved.length?pickRandom(unsolved):(links[0]||'https://datalemur.com/questions');
+    const el=document.getElementById('pyContent');
+    if(el)el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">${unsolved.length} remaining</p><a class="q-link" href="${url}" target="_blank">${shortenUrl(url)} &rarr;</a><br><button class="mark-done-btn" onclick="markSolved('py','${url}')">Mark done</button></div>`;
+  }
+}
+
+function markSolved(type,url){
+  const k='solved_'+type;const s=ls_get(k,[]);
+  if(!s.includes(url))s.push(url);ls_set(k,s);
+  showToast('Marked as solved');genQuestions();
+}
+
+// ===================== CUSTOM SECTIONS =====================
+function renderMainCustomSections(){
+  const fields=getCustomFields();
+  const container=document.getElementById('mainCustomSections');
+  if(!fields.length){container.innerHTML='';return;}
+  container.innerHTML=fields.map(f=>`
+    <div class="section-full">
+      <div class="section-label">${f.name}</div>
+      <div id="custom_main_${f.id}"><div class="empty-state">Loading...</div></div>
+    </div>`).join('');
+}
+
+async function genCustomSections(){
+  const fields=getCustomFields();
+  for(const f of fields){
+    const el=document.getElementById('custom_main_'+f.id);
+    if(!el)continue;
+    const links=parseLinks(f.links||'');
+    if(!links.length){el.innerHTML=`<div class="content-block" style="color:var(--muted2);font-size:13px;">No links added yet. Go to Customise Settings to add links for ${f.name}.</div>`;continue;}
+    const solved=ls_get('solved_custom_'+f.id,[]);
+    const unsolved=links.filter(u=>!solved.includes(u));
+    const url=unsolved.length?pickRandom(unsolved):links[0];
+    el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">${unsolved.length} of ${links.length} remaining</p><a class="q-link" href="${url}" target="_blank">${shortenUrl(url)} &rarr;</a><br><button class="mark-done-btn" onclick="markCustomSolved('${f.id}','${url}')">Mark done</button></div>`;
+  }
+}
+
+function markCustomSolved(fieldId,url){
+  const k='solved_custom_'+fieldId;const s=ls_get(k,[]);
+  if(!s.includes(url))s.push(url);ls_set(k,s);
+  showToast('Marked as solved');genCustomSections();
+}
+
+// ===================== APPS SCRIPT GENERATOR =====================
+function generateScript(){
+  const email=ls_get('cfg_email','')||'your@email.com';
+  const time=ls_get('cfg_time','8');
+  const rss=ls_get('cfg_rss',selectedRSS)||'https://techcrunch.com/category/artificial-intelligence/feed/';
+  const sqlLinks=JSON.stringify(parseLinks(ls_get('cfg_sql',DEFAULT_SQL)));
+  const pyLinks=JSON.stringify(parseLinks(ls_get('cfg_python',DEFAULT_PY)));
+  const probLinks=JSON.stringify(parseLinks(ls_get('cfg_problems','https://hackerrank.com/domains/algorithms\nhttps://projecteuler.net/archives\nhttps://leetcode.com/problemset/')));
+  const sqlOn=isSectionOn('sql'),pyOn=isSectionOn('python'),probOn=isSectionOn('problem');
+  const customFields=getCustomFields();
+  const customVars=customFields.map(f=>`var CUSTOM_${f.id.toUpperCase()}_LINKS=${JSON.stringify(parseLinks(f.links||''))};`).join('\n');
+  const customEmail=customFields.map(f=>`
+  var cs_${f.id}=getSolved("custom_${f.id}");
+  var cu_${f.id}=CUSTOM_${f.id.toUpperCase()}_LINKS.filter(function(u){return cs_${f.id}.indexOf(u)<0;});
+  var curl_${f.id}=cu_${f.id}.length?pickRandom(cu_${f.id}):(CUSTOM_${f.id.toUpperCase()}_LINKS[0]||'');
+  if(curl_${f.id})body+="${f.name.toUpperCase()} ("+(CUSTOM_${f.id.toUpperCase()}_LINKS.length-cu_${f.id}.length)+"/"+CUSTOM_${f.id.toUpperCase()}_LINKS.length+" done)\\n---\\n"+curl_${f.id}+"\\n\\n";`).join('');
+
+  const script=`// ================================================
+// DAILY DIGEST — Google Apps Script
+// Email: ${email} | Time: ${time}:00 AM
+// ================================================
+// Add ANTHROPIC_KEY in Project Settings > Script Properties
+
+var RECIPIENT="${email}";
+var RSS_URL="${rss}";
+${probOn?`var PROB_LINKS=${probLinks};`:''}
+${sqlOn?`var SQL_LINKS=${sqlLinks};`:''}
+${pyOn?`var PY_LINKS=${pyLinks};`:''}
+${customVars}
+
+function pickRandom(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+function getOrCreateSheet(){
+  var props=PropertiesService.getScriptProperties();
+  var id=props.getProperty("SHEET_ID");
+  if(id){try{return SpreadsheetApp.openById(id);}catch(e){}}
+  var ss=SpreadsheetApp.create("Daily Digest Tracker");
+  props.setProperty("SHEET_ID",ss.getId());
+  var sh=ss.getActiveSheet();sh.setName("Solved");
+  sh.appendRow(["Type","URL","Date"]);
+  return ss;
+}
+
+function getSolved(type){
+  try{
+    var sh=getOrCreateSheet().getSheetByName("Solved");
+    var data=sh.getDataRange().getValues();
+    return data.slice(1).filter(function(r){return r[0]===type;}).map(function(r){return r[1];});
+  }catch(e){return[];}
+}
+
+function callClaude(prompt,useSearch){
+  var key=PropertiesService.getScriptProperties().getProperty("ANTHROPIC_KEY");
+  var body={model:"claude-sonnet-4-5",max_tokens:1000,messages:[{role:"user",content:prompt}]};
+  if(useSearch)body.tools=[{type:"web_search_20250305",name:"web_search"}];
+  var res=UrlFetchApp.fetch("https://api.anthropic.com/v1/messages",{
+    method:"post",muteHttpExceptions:true,
+    headers:{"x-api-key":key,"anthropic-version":"2023-06-01","content-type":"application/json"},
+    payload:JSON.stringify(body)
+  });
+  var json=JSON.parse(res.getContentText());
+  if(json.content){for(var i=0;i<json.content.length;i++){if(json.content[i].type==="text"&&json.content[i].text.length>20)return json.content[i].text;}}
+  return "Unavailable.";
+}
+
+function fetchAINews(){
+  try{
+    var xml=UrlFetchApp.fetch(RSS_URL,{muteHttpExceptions:true}).getContentText();
+    var items=xml.match(/<item>[\\s\\S]*?<\\/item>/g)||[];
+    return items.slice(0,3).map(function(item){
+      var title=(item.match(/<title><!\\[CDATA\\[(.*?)\\]\\]><\\/title>/)||item.match(/<title>(.*?)<\\/title>/))||['',''];
+      var link=(item.match(/<link>(.*?)<\\/link>/))||['',''];
+      return title[1].trim()+" - "+link[1].trim();
+    }).join("\\n");
+  }catch(e){return callClaude("List 3 top AI news headlines from today in one line each. No markdown.",true);}
+}
+
+function sendDailyEmail(){
+  var today=new Date().toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+  var vocab=callClaude("Generate 2 business vocabulary words for interviews. For each: word, definition (1 sentence), 3 example sentences. Plain text, no markdown.");
+  var ceo=callClaude("One CEO daily habit: who, what, when, result, one adoption tip. Plain text, concise.");
+  var news=fetchAINews();
+  var body="Good morning!\\n\\n"+today+"\\n================================================\\n\\n";
+  body+="VOCABULARY\\n---\\n"+vocab+"\\n\\n";
+  body+="AI UPDATES\\n---\\n"+news+"\\n\\n";
+  body+="CEO HABIT\\n---\\n"+ceo+"\\n\\n";
+  ${probOn?'var probUrl=pickRandom(PROB_LINKS);\n  body+="PROBLEM OF THE DAY\\n---\\n"+probUrl+"\\n\\n";':''}
+  ${sqlOn?'var sqlSolved=getSolved("SQL");var sqlUnsolved=SQL_LINKS.filter(function(u){return sqlSolved.indexOf(u)<0;});var sqlUrl=sqlUnsolved.length?pickRandom(sqlUnsolved):SQL_LINKS[0];\n  body+="SQL ("+(SQL_LINKS.length-sqlUnsolved.length)+"/"+SQL_LINKS.length+" done)\\n---\\n"+sqlUrl+"\\n\\n";':''}
+  ${pyOn?'var pySolved=getSolved("Python");var pyUnsolved=PY_LINKS.filter(function(u){return pySolved.indexOf(u)<0;});var pyUrl=pyUnsolved.length?pickRandom(pyUnsolved):PY_LINKS[0];\n  body+="PYTHON ("+(PY_LINKS.length-pyUnsolved.length)+"/"+PY_LINKS.length+" done)\\n---\\n"+pyUrl+"\\n\\n";':''}
+  ${customEmail}
+  body+="================================================\\nSent at ${time}:00 AM";
+  GmailApp.sendEmail(RECIPIENT,"Daily Digest - "+today,body);
+}`;
+
+  document.getElementById('scriptContent').textContent=script;
+  document.getElementById('scriptBox').classList.add('show');
+}
+
+function copyScript(){
+  navigator.clipboard.writeText(document.getElementById('scriptContent').textContent).then(()=>{
+    const btn=document.querySelector('.copy-btn');btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent='Copy all',2000);
+  });
+}
+
+// ===================== DEFAULTS =====================
+const DEFAULT_SQL=`https://leetcode.com/problems/recyclable-and-low-fat-products/
+https://leetcode.com/problems/find-customer-referee/
+https://leetcode.com/problems/big-countries/
+https://leetcode.com/problems/rising-temperature/
+https://leetcode.com/problems/employee-bonus/
+https://leetcode.com/problems/not-boring-movies/
+https://leetcode.com/problems/second-highest-salary/
+https://leetcode.com/problems/find-users-with-valid-e-mails/`;
+
+const DEFAULT_PY=`https://datalemur.com/questions/completed-trades
+https://datalemur.com/questions/matching-skills
+https://datalemur.com/questions/laptop-mobile-viewership
+https://datalemur.com/questions/teams-power-users
+https://datalemur.com/questions/sql-histogram-tweets
+https://datalemur.com/questions/top-profitable-drugs`;
+
+// ===================== INIT =====================
+(function init(){
+  const savedTheme=ls_get('cfg_theme','');
+  applyTheme(savedTheme);
+  updateMasthead();
+  renderMainBuiltins();
+  renderMainCustomSections();
+  autoPopulate();
+})();
+</script>
+</body>
+</html>
