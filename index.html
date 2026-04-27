@@ -46,6 +46,14 @@ body.theme-flowers{
 .theme-overlay{position:fixed;bottom:0;left:0;right:0;height:340px;pointer-events:none;z-index:0;opacity:0;transition:opacity 0.5s;}
 body.theme-spring .theme-overlay,
 body.theme-flowers .theme-overlay{opacity:1;}
+body.theme-spring .section::after,
+body.theme-flowers .section::after,
+body.theme-spring .section-full::after,
+body.theme-flowers .section-full::after,
+body.theme-spring .masthead::after,
+body.theme-flowers .masthead::after,
+body.theme-spring .masthead::before,
+body.theme-flowers .masthead::before{display:none;}
 body.theme-nature .nature-overlay{opacity:1;}
 
 /* SVG floral bottom fade */
@@ -72,9 +80,9 @@ body.theme-nature .nature-leaves{opacity:1;}
 /* MASTHEAD */
 .masthead{text-align:center;padding:40px 0 28px;margin-bottom:0;position:relative;}
 .masthead::before{content:'';position:absolute;top:0;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);} .masthead::after{content:'';position:absolute;bottom:0;left:5%;right:5%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-border),transparent);}
-.masthead-title{font-family:'Cormorant Garamond',serif;font-size:60px;font-weight:300;letter-spacing:-2px;line-height:1;color:var(--ink);display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:0 16px;}
+.masthead-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5.5vw,60px);font-weight:300;letter-spacing:-1px;line-height:1;color:var(--ink);display:flex;align-items:baseline;justify-content:center;flex-wrap:nowrap;gap:0 10px;white-space:nowrap;}
 .masthead-title span{font-style:italic;color:var(--gold);}
-.masthead-name-inline{font-family:'Cormorant Garamond',serif;font-size:60px;font-weight:300;letter-spacing:-2px;line-height:1;color:var(--gold);font-style:italic;}
+.masthead-name-inline{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5.5vw,60px);font-weight:300;letter-spacing:-1px;line-height:1;color:var(--gold);font-style:italic;white-space:nowrap;}
 .masthead-date{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-top:10px;text-transform:uppercase;}
 
 /* STATUS BAR */
@@ -84,12 +92,12 @@ body.theme-nature .nature-leaves{opacity:1;}
 .refresh-btn:hover{color:var(--gold);}
 
 /* SECTIONS */
-.columns{display:grid;grid-template-columns:1fr 1fr;gap:0;}
-.col-l{padding-right:32px;position:relative;} .col-l::after{content:'';position:absolute;top:10%;right:0;bottom:10%;width:1px;background:linear-gradient(180deg,transparent,var(--gold-border) 40%,var(--gold-border) 60%,transparent);}
-.col-r{padding-left:32px;}
-.section{padding:28px 0;position:relative;} .section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-border) 20%,var(--gold-border) 80%,transparent);}
+.columns{display:flex;flex-direction:column;gap:0;}
+.col-l{padding-right:0;}
+.col-r{padding-left:0;}
+.section{padding:20px 0;position:relative;} .section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-border) 20%,var(--gold-border) 80%,transparent);}
 .section:last-child::after{display:none;}
-.section-full{padding:28px 0;position:relative;} .section-full::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-border) 20%,var(--gold-border) 80%,transparent);}
+.section-full{padding:20px 0;position:relative;} .section-full::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-border) 20%,var(--gold-border) 80%,transparent);}
 
 .section-label{font-family:'DM Mono',monospace;font-size:16px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px;font-weight:500;}
 .section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--gold-border),transparent);}
@@ -103,7 +111,7 @@ body.theme-nature .nature-leaves{opacity:1;}
 .word-examples li{font-size:16px;color:var(--muted);line-height:1.75;padding:5px 0 5px 14px;border-left:2px solid var(--gold-border);margin-bottom:8px;font-style:italic;}
 .content-block{font-size:14px;line-height:1.8;color:var(--ink);}
 .content-block .label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
-.q-link{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);border-bottom:1px solid rgba(45,90,61,0.3);text-decoration:none;margin-top:8px;transition:color 0.15s;}
+.q-link{display:block;font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);border-bottom:1px solid rgba(45,90,61,0.3);text-decoration:none;margin-top:10px;margin-bottom:6px;padding:6px 0;word-break:break-all;transition:color 0.15s;}
 .q-link:hover{color:var(--gold);}
 .ai-item{padding:10px 0;border-bottom:1px dashed var(--rule);}
 .ai-item:last-child{border-bottom:none;}
@@ -157,17 +165,15 @@ textarea.be-input{resize:vertical;min-height:90px;font-size:12px;line-height:1.6
 .theme-swatch-name{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
 
 /* CUSTOM FIELDS */
-.custom-fields-list{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
-.custom-field-card{background:white;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;position:relative;animation:slideIn 0.2s ease;}
+
+
 @keyframes slideIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .custom-field-card .cf-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .custom-field-card .cf-name{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:500;}
-.cf-remove{background:none;border:none;cursor:pointer;color:var(--muted2);font-size:16px;line-height:1;padding:0 2px;transition:color 0.15s;}
+
 .cf-remove:hover{color:var(--danger);}
-.cf-inputs{display:grid;grid-template-columns:80px 1fr;gap:8px;margin-bottom:8px;}
-.cf-label-small{font-size:11px;color:var(--muted);margin-bottom:3px;}
-.add-field-btn{width:100%;padding:10px;background:transparent;border:1.5px dashed var(--gold-border);border-radius:4px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);cursor:pointer;transition:all 0.15s;margin-top:4px;}
-.add-field-btn:hover{background:var(--gold-pale);border-color:var(--gold);}
+
+
 
 /* RSS */
 .rss-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
@@ -178,16 +184,16 @@ textarea.be-input{resize:vertical;min-height:90px;font-size:12px;line-height:1.6
 .rss-option-url{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
 .info-box{background:var(--gold-pale);border:1px solid var(--gold-border);border-radius:4px;padding:11px 14px;margin-bottom:12px;font-size:13px;color:var(--ink);line-height:1.6;}
 .info-box strong{font-weight:500;color:var(--gold);}
-.script-box{background:#0f0f14;border-radius:6px;padding:16px;font-family:'DM Mono',monospace;font-size:11px;color:#a0e6c0;line-height:1.7;white-space:pre-wrap;word-break:break-all;max-height:320px;overflow-y:auto;display:none;position:relative;margin-top:10px;}
-.script-box.show{display:block;}
-.copy-btn{position:sticky;top:0;float:right;background:var(--gold);color:var(--ink);border:none;padding:4px 12px;border-radius:3px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:500;cursor:pointer;margin-bottom:8px;}
+
+
+
 .saved-toast{position:fixed;bottom:24px;right:24px;background:var(--accent);color:white;padding:10px 20px;border-radius:4px;font-size:13px;font-family:'DM Mono',monospace;letter-spacing:1px;display:none;z-index:999;}
 
 @media(max-width:580px){
   .columns{grid-template-columns:1fr;}
   .col-l{border-right:none;padding-right:0;border-bottom:1px solid var(--rule);}
   .col-r{padding-left:0;}
-  .masthead-title{font-size:34px;letter-spacing:-1px;}
+  .masthead-title{font-size:clamp(22px,6vw,36px);white-space:nowrap;}
   .theme-grid{grid-template-columns:repeat(3,1fr);}
   .rss-options,.cf-inputs{grid-template-columns:1fr;}
 }
@@ -361,25 +367,31 @@ textarea.be-input{resize:vertical;min-height:90px;font-size:12px;line-height:1.6
 
     <div class="columns">
       <div class="col-l">
+        <div id="section_wrap_vocab">
         <div class="section">
           <div class="section-label">Vocabulary</div>
           <div id="vocabContent"><div class="empty-state">Loading...</div></div>
         </div>
+        </div>
       </div>
       <div class="col-r">
+        <div id="section_wrap_ceo">
         <div class="section">
           <div class="section-label">CEO Habit</div>
           <div id="ceoContent"><div class="empty-state">Loading...</div></div>
         </div>
+        </div>
+        <div id="section_wrap_ai">
         <div class="section">
-          <div class="section-label">AI Updates</div>
+          <div class="section-label" id="aiSectionLabel">News</div>
           <div id="aiContent"><div class="empty-state">Loading...</div></div>
+        </div>
         </div>
       </div>
     </div>
 
     <div id="mainBuiltins"></div>
-    <div id="mainCustomSections"></div>
+    
   </div>
 </div>
 
@@ -398,25 +410,7 @@ textarea.be-input{resize:vertical;min-height:90px;font-size:12px;line-height:1.6
         <div class="be-label">Your name <span class="be-hint">Shown on the main page header</span></div>
         <input class="be-input" type="text" id="cfg_name" placeholder="e.g. Trisha"/>
       </div>
-      <div class="be-row">
-        <div class="be-label">Email address <span class="be-hint">Where your daily email is sent</span></div>
-        <input class="be-input" type="email" id="cfg_email" placeholder="you@gmail.com"/>
-      </div>
-      <div class="be-row">
-        <div class="be-label">Anthropic API Key <span class="be-hint">From console.anthropic.com</span></div>
-        <input class="be-input" type="password" id="cfg_apikey" placeholder="sk-ant-..."/>
-      </div>
-      <div class="be-row">
-        <div class="be-label">Send time <span class="be-hint">Daily email trigger time</span></div>
-        <select class="be-select" id="cfg_time">
-          <option value="5">5:00 AM</option>
-          <option value="6">6:00 AM</option>
-          <option value="7">7:00 AM</option>
-          <option value="8" selected>8:00 AM</option>
-          <option value="9">9:00 AM</option>
-          <option value="10">10:00 AM</option>
-        </select>
-      </div>
+
     </div>
 
     <!-- THEME -->
@@ -452,32 +446,35 @@ textarea.be-input{resize:vertical;min-height:90px;font-size:12px;line-height:1.6
       </div>
     </div>
 
+    <!-- VOCAB CATEGORY -->
+    <div class="be-section">
+      <div class="be-section-header"><div class="be-section-title">Vocabulary Category</div></div>
+      <div class="be-row">
+        <div class="be-label">Word category <span class="be-hint">Choose what type of vocabulary you want to learn</span></div>
+        <select class="be-select" id="cfg_vocab_category">
+          <option value="business">Business (default)</option>
+          <option value="leadership">Leadership and Management</option>
+          <option value="finance">Finance and Economics</option>
+          <option value="marketing">Marketing and Communication</option>
+          <option value="academic">Academic and Formal English</option>
+        </select>
+      </div>
+    </div>
+
     <!-- AI NEWS -->
     <div class="be-section">
-      <div class="be-section-header"><div class="be-section-title">AI News Source</div></div>
-      <div class="info-box"><strong>How it works:</strong> Pick a free RSS feed — headlines are fetched automatically, no extra account needed.</div>
-      <div class="rss-options" id="rssOptions">
-        <div class="rss-option selected" onclick="selectRSS(this,'https://techcrunch.com/category/artificial-intelligence/feed/')">
-          <div class="rss-option-name">TechCrunch AI</div>
-          <div class="rss-option-url">techcrunch.com</div>
-        </div>
-        <div class="rss-option" onclick="selectRSS(this,'https://feeds.feedburner.com/TheVergeAI')">
-          <div class="rss-option-name">The Verge AI</div>
-          <div class="rss-option-url">theverge.com</div>
-        </div>
-        <div class="rss-option" onclick="selectRSS(this,'https://www.artificialintelligence-news.com/feed/')">
-          <div class="rss-option-name">AI News</div>
-          <div class="rss-option-url">artificialintelligence-news.com</div>
-        </div>
-        <div class="rss-option" onclick="selectRSS(this,'https://venturebeat.com/category/ai/feed/')">
-          <div class="rss-option-name">VentureBeat AI</div>
-          <div class="rss-option-url">venturebeat.com</div>
-        </div>
-      </div>
-      <input class="be-input" id="cfg_rss" placeholder="Or paste any custom RSS feed URL..."/>
-      <div style="margin-top:10px;">
-        <div class="be-label" style="margin-top:8px;">Article listing page URL <span class="be-hint">e.g. nytimes.com/spotlight/artificial-intelligence — Claude picks 2-3 articles and summarises them</span></div>
-        <input class="be-input" id="cfg_ai_url" placeholder="https://www.nytimes.com/spotlight/artificial-intelligence"/>
+      <div class="be-section-header"><div class="be-section-title">News Source</div></div>
+
+
+      <div class="be-row" style="margin-top:10px;">
+        <div class="be-label">News category <span class="be-hint">Selects the RSS feed automatically</span></div>
+        <select class="be-select" id="cfg_news_category" onchange="onNewsCategoryChange(this)">
+          <option value="ai">AI News (default)</option>
+          <option value="tech">Tech News</option>
+          <option value="business">Business and Finance</option>
+          <option value="world">World News</option>
+
+        </select>
       </div>
     </div>
 
@@ -487,48 +484,55 @@ textarea.be-input{resize:vertical;min-height:90px;font-size:12px;line-height:1.6
       <div class="info-box"><strong>Toggle any section off</strong> to hide it from your daily digest. Always reversible.</div>
 
       <div style="display:flex;flex-direction:column;gap:10px;">
+        <!-- VOCAB TOGGLE -->
+        <div style="background:white;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+          <div class="be-section-header" style="margin-bottom:0;">
+            <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);font-weight:500;">Vocabulary</div>
+            <div class="toggle-wrap"><span class="toggle-label" id="lbl_vocab">On</span><label class="toggle"><input type="checkbox" id="tog_vocab" checked onchange="toggleSection('vocab')"><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
+
+        <!-- CEO TOGGLE -->
+        <div style="background:white;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+          <div class="be-section-header" style="margin-bottom:0;">
+            <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);font-weight:500;">CEO Habit</div>
+            <div class="toggle-wrap"><span class="toggle-label" id="lbl_ceo">On</span><label class="toggle"><input type="checkbox" id="tog_ceo" checked onchange="toggleSection('ceo')"><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
+
+        <!-- AI UPDATES TOGGLE -->
+        <div style="background:white;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+          <div class="be-section-header" style="margin-bottom:0;">
+            <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);font-weight:500;">AI Updates</div>
+            <div class="toggle-wrap"><span class="toggle-label" id="lbl_ai">On</span><label class="toggle"><input type="checkbox" id="tog_ai" checked onchange="toggleSection('ai')"><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
+        <!-- SQL TOGGLE -->
+        <div style="background:white;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+          <div class="be-section-header" style="margin-bottom:0;">
+            <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);font-weight:500;">SQL</div>
+            <div class="toggle-wrap"><span class="toggle-label" id="lbl_sql">On</span><label class="toggle"><input type="checkbox" id="tog_sql" checked onchange="toggleSection('sql')"><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
+
+        <!-- PYTHON TOGGLE -->
+        <div style="background:white;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
+          <div class="be-section-header" style="margin-bottom:0;">
+            <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);font-weight:500;">Python</div>
+            <div class="toggle-wrap"><span class="toggle-label" id="lbl_python">On</span><label class="toggle"><input type="checkbox" id="tog_python" checked onchange="toggleSection('python')"><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
+
+        <!-- PROBLEM SOLVING TOGGLE -->
         <div style="background:white;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
           <div class="be-section-header" style="margin-bottom:0;">
             <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);font-weight:500;">Problem Solving</div>
             <div class="toggle-wrap"><span class="toggle-label" id="lbl_problem">On</span><label class="toggle"><input type="checkbox" id="tog_problem" checked onchange="toggleSection('problem')"><span class="toggle-slider"></span></label></div>
           </div>
-          <div id="body_problem" class="be-section-body" style="margin-top:12px;">
-            <div class="be-hint" style="margin-bottom:6px;font-size:12px;">One URL per line. One is picked randomly each day.</div>
-            <textarea class="be-input" id="cfg_problems" placeholder="One URL per line:&#10;https://hackerrank.com/challenges/example&#10;https://projecteuler.net/problem=1&#10;https://leetcode.com/problems/two-sum/"></textarea>
-          </div>
-        </div>
-
-        <div style="background:white;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
-          <div class="be-section-header" style="margin-bottom:0;">
-            <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);font-weight:500;">SQL Questions</div>
-            <div class="toggle-wrap"><span class="toggle-label" id="lbl_sql">On</span><label class="toggle"><input type="checkbox" id="tog_sql" checked onchange="toggleSection('sql')"><span class="toggle-slider"></span></label></div>
-          </div>
-          <div id="body_sql" class="be-section-body" style="margin-top:12px;">
-            <div class="be-hint" style="margin-bottom:6px;font-size:12px;">One URL per line. Solved ones are tracked automatically.</div>
-            <textarea class="be-input" id="cfg_sql" placeholder="https://leetcode.com/problems/recyclable-and-low-fat-products/&#10;https://leetcode.com/problems/find-customer-referee/"></textarea>
-          </div>
-        </div>
-
-        <div style="background:white;border:1px solid var(--rule);border-radius:6px;padding:14px 16px;">
-          <div class="be-section-header" style="margin-bottom:0;">
-            <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);font-weight:500;">Python Questions</div>
-            <div class="toggle-wrap"><span class="toggle-label" id="lbl_python">On</span><label class="toggle"><input type="checkbox" id="tog_python" checked onchange="toggleSection('python')"><span class="toggle-slider"></span></label></div>
-          </div>
-          <div id="body_python" class="be-section-body" style="margin-top:12px;">
-            <div class="be-hint" style="margin-bottom:6px;font-size:12px;">One URL per line. Solved ones are tracked automatically.</div>
-            <textarea class="be-input" id="cfg_python" placeholder="https://datalemur.com/questions/completed-trades&#10;https://datalemur.com/questions/matching-skills"></textarea>
-          </div>
         </div>
       </div>
-    </div>
 
-    <!-- CUSTOM FIELDS -->
-    <div class="be-section">
-      <div class="be-section-header"><div class="be-section-title">Custom Question Categories</div></div>
-      <div class="info-box"><strong>Add anything you want</strong> — Java, System Design, Finance, Excel. Each gets its own section with the same random-pick and solved-tracking logic.</div>
-      <div class="custom-fields-list" id="customFieldsList"></div>
-      <button class="add-field-btn" onclick="addCustomField()">+ Add custom category</button>
-    </div>
+
 
     <div style="margin-top:8px;">
       <button class="be-save-btn" onclick="saveSettings()">Save all settings</button>
@@ -537,12 +541,26 @@ textarea.be-input{resize:vertical;min-height:90px;font-size:12px;line-height:1.6
     <!-- APPS SCRIPT -->
     <div class="be-section" style="margin-top:24px;">
       <div class="be-section-header"><div class="be-section-title">Email Automation</div></div>
-      <div class="info-box"><strong>One-time setup:</strong> Generate your personalised Apps Script, paste at script.google.com, set a daily trigger.</div>
-      <button class="be-save-btn" style="background:var(--paper2);color:var(--ink);border:1px solid var(--rule);" onclick="generateScript()">Generate My Apps Script</button>
-      <div class="script-box" id="scriptBox">
-        <button class="copy-btn" onclick="copyScript()">Copy all</button>
-        <span id="scriptContent"></span>
+      <div style="background:var(--paper2);border:1px solid var(--rule);border-radius:4px;padding:14px 16px;margin-bottom:12px;">
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Enter your email below and I will send you a reminder every day at your set time to open this digest.</p>
       </div>
+      <div class="be-row">
+        <div class="be-label">Your email address</div>
+        <input class="be-input" type="email" id="cfg_email" placeholder="you@gmail.com"/>
+      </div>
+      <div class="be-row" style="margin-top:12px;">
+        <div class="be-label">Reminder time <span class="be-hint">When you want to receive the daily link</span></div>
+        <select class="be-select" id="cfg_time">
+          <option value="5">5:00 AM</option>
+          <option value="6">6:00 AM</option>
+          <option value="7">7:00 AM</option>
+          <option value="8" selected>8:00 AM</option>
+          <option value="9">9:00 AM</option>
+          <option value="10">10:00 AM</option>
+        </select>
+      </div>
+      <button class="be-save-btn" onclick="saveEmailAndNotify()" style="margin-top:12px;">Save email</button>
+      <div id="emailSavedMsg" style="display:none;font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);margin-top:8px;letter-spacing:1px;">✓ Email saved</div>
     </div>
   </div>
 </div>
@@ -601,7 +619,12 @@ function switchPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',['main','backend'][i]===name));
   document.getElementById('page-'+name).classList.add('active');
-  if(name==='backend'){loadSettings();renderCustomFieldsUI();}
+  if(name==='backend'){loadSettings();}
+  if(name==='main'){
+    updateMasthead();
+    renderMainBuiltins();
+    autoPopulate();
+  }
 }
 
 // ===================== TOAST =====================
@@ -613,34 +636,45 @@ function showToast(msg){
 // ===================== TOGGLE SECTIONS =====================
 function toggleSection(key){
   const cb=document.getElementById('tog_'+key);
-  const body=document.getElementById('body_'+key);
   const lbl=document.getElementById('lbl_'+key);
+  const body=document.getElementById('body_'+key);
   const on=cb.checked;
-  body.classList.toggle('hidden',!on);
-  lbl.textContent=on?'On':'Off';
+  if(body) body.classList.toggle('hidden',!on);
+  if(lbl) lbl.textContent=on?'On':'Off';
   ls_set('sec_enabled_'+key,on);
+  const wrapper=document.getElementById('section_wrap_'+key);
+  if(wrapper) wrapper.style.display=on?'':'none';
 }
 function isSectionOn(key){return ls_get('sec_enabled_'+key,true);}
 
 // ===================== SETTINGS =====================
-let selectedRSS='https://techcrunch.com/category/artificial-intelligence/feed/';
+let selectedRSS='https://tldr.tech/ai';
 
 function loadSettings(){
-  ['name','email','apikey','time','rss','ai_url','problems','sql','python'].forEach(f=>{
+  ['name','email','time','vocab_category','news_category','python'].forEach(f=>{
     const el=document.getElementById('cfg_'+f);
     if(!el)return;
     const v=ls_get('cfg_'+f,'');
     if(v)el.value=v;
   });
-  ['problem','sql','python'].forEach(k=>{
+  ['vocab','ceo','ai','sql','python','problem'].forEach(k=>{
     const on=isSectionOn(k);
     const cb=document.getElementById('tog_'+k);
-    const body=document.getElementById('body_'+k);
     const lbl=document.getElementById('lbl_'+k);
-    if(cb){cb.checked=on;body.classList.toggle('hidden',!on);lbl.textContent=on?'On':'Off';}
-  });
-  const rss=ls_get('cfg_rss','');
-  if(rss){selectedRSS=rss;document.getElementById('cfg_rss').value=rss;}
+    const body=document.getElementById('body_'+k);
+    if(cb) cb.checked=on;
+    if(lbl) lbl.textContent=on?'On':'Off';
+    if(body) body.classList.toggle('hidden',!on);
+    const wrapper=document.getElementById('section_wrap_'+k);
+    if(wrapper) wrapper.style.display=on?'':'none';
+  });;
+  // rss url field removed
+  const nc=ls_get('cfg_news_category','ai');
+  const ncEl=document.getElementById('cfg_news_category');
+  if(ncEl) ncEl.value=nc;
+  const vc=ls_get('cfg_vocab_category','business');
+  const vcEl=document.getElementById('cfg_vocab_category');
+  if(vcEl) vcEl.value=vc;
   // restore theme swatches
   const savedTheme=ls_get('cfg_theme','');
   document.querySelectorAll('.theme-swatch').forEach(s=>{
@@ -648,76 +682,73 @@ function loadSettings(){
   });
 }
 
+function saveEmailAndNotify(){
+  const emailEl = document.getElementById('cfg_email');
+  if(!emailEl || !emailEl.value){showToast('Please enter an email address');return;}
+  ls_set('cfg_email', emailEl.value);
+  const msg = document.getElementById('emailSavedMsg');
+  if(msg){msg.style.display='block';setTimeout(()=>msg.style.display='none',3000);}
+  showToast('Email saved');
+}
+
 function saveSettings(){
-  ['name','email','apikey','time','rss','ai_url','problems','sql','python'].forEach(f=>{
+  ['name','email','time','vocab_category','news_category','python'].forEach(f=>{
     const el=document.getElementById('cfg_'+f);
     if(el)ls_set('cfg_'+f,el.value);
   });
-  saveCustomFields();
   updateMasthead();
   showToast('Settings saved');
 }
 
-function selectRSS(el,url){
-  document.querySelectorAll('.rss-option').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected');selectedRSS=url;
-  document.getElementById('cfg_rss').value=url;
+function selectRSS(el,url){ selectedRSS=url; }
+
+var NEWS_CATEGORY_FEEDS = {
+  ai: [
+    "https://www.artificialintelligence-news.com/feed/rss/",
+    "https://news.mit.edu/rss/topic/artificial-intelligence",
+    "https://techcrunch.com/category/artificial-intelligence/feed/",
+    "https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml"
+  ],
+  tech: [
+    "https://rss.slashdot.org/Slashdot/slashdotMain",
+    "https://feeds.arstechnica.com/arstechnica/index",
+    "https://www.wired.com/feed/tag/ai/latest/rss",
+    "https://thenextweb.com/neural/feed"
+  ],
+  business: [
+    "https://feeds.bbci.co.uk/news/business/rss.xml",
+    "https://rss.slashdot.org/Slashdot/slashdotBusiness",
+    "https://feeds.arstechnica.com/arstechnica/business",
+    "https://www.entrepreneur.com/latest.rss"
+  ],
+  world: [
+    "https://feeds.bbci.co.uk/news/world/rss.xml",
+    "https://feeds.npr.org/1004/rss.xml",
+    "https://feeds.bbci.co.uk/news/rss.xml",
+    "https://www.theguardian.com/world/rss"
+  ]
+}
+
+function onNewsCategoryChange(sel){
+  const cat = sel.value;
+  ls_set('cfg_news_category', cat);
+  // Clear all category caches so new one fetches fresh
+  ['ai','tech','business','world'].forEach(c=>{
+    localStorage.removeItem('digest_cache_ai_'+c);
+  });
+  // If on main page, regenerate AI section immediately
+  if(document.getElementById('page-main').classList.contains('active')){
+    genAI();
+  }
 }
 
 // ===================== CUSTOM FIELDS =====================
-function getCustomFields(){return ls_get('custom_fields',[]);}
-function saveCustomFields(){
-  const list=[];
-  document.querySelectorAll('.custom-field-card').forEach(card=>{
-    const id=card.dataset.id;
-    const name=card.querySelector('.cf-name-input').value.trim();
-    const icon=card.querySelector('.cf-icon-input').value.trim()||'—';
-    const links=card.querySelector('.cf-links-input').value.trim();
-    if(name)list.push({id,name,icon,links});
-  });
-  ls_set('custom_fields',list);return list;
-}
-function addCustomField(){
-  const fields=getCustomFields();
-  const id='cf_'+Date.now();
-  fields.push({id,name:'',icon:'—',links:''});
-  ls_set('custom_fields',fields);
-  renderCustomFieldsUI();
-  setTimeout(()=>{const el=document.querySelector(`[data-id="${id}"]`);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},100);
-}
-function removeCustomField(id){
-  ls_set('custom_fields',getCustomFields().filter(f=>f.id!==id));
-  renderCustomFieldsUI();showToast('Category removed');
-}
-function renderCustomFieldsUI(){
-  const fields=getCustomFields();
-  const container=document.getElementById('customFieldsList');
-  if(!fields.length){container.innerHTML='';return;}
-  container.innerHTML=fields.map(f=>`
-    <div class="custom-field-card" data-id="${f.id}">
-      <div class="cf-header">
-        <div class="cf-name">${f.name||'New Category'}</div>
-        <button class="cf-remove" onclick="removeCustomField('${f.id}')">x</button>
-      </div>
-      <div class="cf-inputs">
-        <div>
-          <div class="cf-label-small">Short label</div>
-          <input class="be-input cf-icon-input" value="${f.icon||''}" placeholder="e.g. Java" style="font-size:13px;" oninput="liveUpdateCard(this)"/>
-        </div>
-        <div>
-          <div class="cf-label-small">Category name</div>
-          <input class="be-input cf-name-input" value="${f.name||''}" placeholder="e.g. Java Challenges, System Design..." oninput="liveUpdateCard(this)"/>
-        </div>
-      </div>
-      <div class="cf-label-small" style="margin-bottom:4px;">Links (one per line)</div>
-      <textarea class="be-input cf-links-input" placeholder="https://example.com/question-1&#10;https://example.com/question-2" style="min-height:70px;">${f.links||''}</textarea>
-    </div>`).join('');
-}
-function liveUpdateCard(input){
-  const card=input.closest('.custom-field-card');
-  const name=card.querySelector('.cf-name-input').value.trim()||'New Category';
-  card.querySelector('.cf-name').textContent=name;
-}
+
+
+
+
+
+
 
 // ===================== HELPERS =====================
 function parseLinks(text){return(text||'').split('\n').map(l=>l.trim()).filter(l=>l.startsWith('http'));}
@@ -725,13 +756,16 @@ function pickRandom(arr){return arr[Math.floor(Math.random()*arr.length)];}
 function shortenUrl(url){try{const u=new URL(url);return u.hostname.replace('www.','')+u.pathname.slice(0,28)+(u.pathname.length>28?'...':'');}catch(e){return url.slice(0,38);}}
 function extract(text,key){const m=text.match(new RegExp(key+':\\s*(.+)'));return m?m[1].trim():'';}
 function showSkeleton(id){const el=document.getElementById(id);if(el)el.innerHTML='<div class="skel-line skeleton medium"></div><div class="skel-line skeleton short"></div><div class="skel-line skeleton medium"></div><div class="skel-line skeleton short"></div>';}
-function getApiKey(){return ls_get('cfg_apikey','')||'';}
+function getApiKey(){return '';} // API key no longer needed for daily operation
 
 const PROXY_URL = 'https://script.google.com/macros/s/AKfycbxLY7iZEZ9kL2BKYraGqgB2SSn-7saH-M0E9w71PxUVFK3DrLLCqC-BP4_KRtYw0n6bYA/exec';
 
-async function callAppsScript(type, extraParam){
+async function callAppsScript(type, extraParam, paramName){
   let url = PROXY_URL + '?type=' + type;
-  if(extraParam) url += '&url=' + encodeURIComponent(extraParam);
+  if(extraParam){
+    const key = paramName || 'url';
+    url += '&' + key + '=' + encodeURIComponent(extraParam);
+  }
   const res = await fetch(url);
   if(!res.ok) throw new Error('Server error: ' + res.status);
   const text = await res.text();
@@ -748,7 +782,13 @@ async function callClaude(prompt, useSearch=false){
 }
 
 // ===================== AUTO-POPULATE ON LOAD =====================
+async function generateAll(){ return autoPopulate(true); }
 async function autoPopulate(force=false){
+  // Apply section visibility from saved toggle state
+  ['vocab','ceo','ai','sql','python','problem'].forEach(key=>{
+    const wrapper=document.getElementById('section_wrap_'+key);
+    if(wrapper) wrapper.style.display=isSectionOn(key)?'':'none';
+  });
   const status=document.getElementById('genStatus');
   // Check if already generated today
   const cached=getCached('full_generated');
@@ -759,13 +799,11 @@ async function autoPopulate(force=false){
   }
   status.textContent='Generating today\'s content...';
   renderMainBuiltins();
-  renderMainCustomSections();
   const steps=[
     {label:'Generating vocabulary...',fn:genVocab},
     {label:'Fetching AI news...',fn:genAI},
     {label:'Generating CEO habit...',fn:genCEO},
     {label:'Picking your questions...',fn:genQuestions},
-    {label:'Loading custom sections...',fn:genCustomSections},
   ];
   try{
     for(const step of steps){status.textContent=step.label;await step.fn();}
@@ -778,31 +816,40 @@ async function autoPopulate(force=false){
 }
 
 function forceRefresh(){
-  ls_set('cache_full_generated',null);
-  ['cache_vocab','cache_ceo','cache_ai'].forEach(k=>localStorage.removeItem(k));
+  ['digest_cache_full_generated','digest_cache_vocab','digest_cache_ceo','digest_cache_ai','digest_cache_leetcode_daily','digest_cache_datalemur_daily','digest_cache_euler_daily','digest_cache_ai_ai','digest_cache_ai_tech','digest_cache_ai_business','digest_cache_ai_world'].forEach(k=>localStorage.removeItem(k));
   autoPopulate(true);
 }
 
 function renderFromCache(){
-  // restore each section from its own cache
   const vocab=getCached('vocab');
-  if(vocab)renderVocab(vocab);
+  if(vocab) renderVocab(vocab);
   const ceo=getCached('ceo');
-  if(ceo)renderCEO(ceo);
-  const ai=getCached('ai');
-  if(ai)renderAI(ai);
+  if(ceo) renderCEO(ceo);
+  const newsCatR=ls_get('cfg_news_category','ai');
+  const aiCacheKey='ai_'+newsCatR;
+  const catLabelsR={ai:'News — AI',tech:'News — Tech',business:'News — Business',world:'News — World'};
+  const lblR=document.getElementById('aiSectionLabel');
+  if(lblR) lblR.textContent=catLabelsR[newsCatR]||'News';
+  const ai=getCached(aiCacheKey);
+  if(ai) renderAI(ai);
+  const lc=getCached('leetcode_daily');
+  if(lc) renderLeetcodeDaily(lc);
+  const dl=getCached('datalemur_daily');
+  if(dl) renderDatalemurQuestion(dl);
+  const eu=getCached('euler_daily');
+  if(eu) renderEulerProblem(eu);
   renderMainBuiltins();
   genQuestions();
-  renderMainCustomSections();
-  genCustomSections();
 }
 
 // ===================== VOCAB =====================
 async function genVocab(){
+  if(!isSectionOn('vocab')) return;
   showSkeleton('vocabContent');
   const cached=getCached('vocab');
   if(cached){renderVocab(cached);return;}
-  const text=await callAppsScript('vocab');
+  const vocabCat=ls_get('cfg_vocab_category','business');
+  const text=await callAppsScript('vocab', vocabCat, 'category');
   setCache('vocab',text);
   renderVocab(text);
 }
@@ -822,28 +869,43 @@ function renderVocab(text){
 
 // ===================== AI NEWS =====================
 async function genAI(){
+  if(!isSectionOn('ai')) return;
   showSkeleton('aiContent');
-  const cached=getCached('ai');
+  const newsCat=ls_get('cfg_news_category','ai');
+  const catLabels={ai:'News — AI',tech:'News — Tech',business:'News — Business',world:'News — World'};
+  const lbl=document.getElementById('aiSectionLabel');
+  if(lbl) lbl.textContent=catLabels[newsCat]||'News';
+  const cacheKey='ai_'+newsCat;
+  const cached=getCached(cacheKey);
   if(cached){renderAI(cached);return;}
   try{
-    const aiUrl=ls_get('cfg_ai_url','');
-    const text=await callAppsScript('ai', aiUrl||'detailed');
-    setCache('ai',text);
+    const text=await callAppsScript('ai', newsCat, 'category');
+    setCache(cacheKey,text);
     renderAI(text);
   }catch(e){document.getElementById('aiContent').innerHTML=`<div class="content-block" style="color:var(--muted);font-size:15px;">Could not fetch AI updates: ${e.message}</div>`;}
 }
 function renderAI(text){
   const items=text.split('---').map(b=>b.trim()).filter(Boolean).slice(0,3).map(block=>{
     const get=k=>{const m=block.match(new RegExp(k+':\\s*(.+)'));return m?m[1].trim():'';};
-    return{title:get('TITLE'),why:get('WHY')};
+    const title=get('TITLE');
+    const summary=get('SUMMARY');
+    const date=get('DATE');
+    const why=get('WHY');
+    return{title, summary:summary||why, date};
   }).filter(i=>i.title);
   document.getElementById('aiContent').innerHTML=items.length
-    ?items.map(i=>`<div class="ai-item"><div class="ai-item-title">${i.title}</div><div class="ai-item-why">${i.why}</div></div>`).join('')
+    ?items.map(i=>`
+      <div class="ai-item">
+        <div class="ai-item-title">${i.title}</div>
+        ${i.date?`<div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted2);margin:3px 0 5px;">${i.date}</div>`:''}
+        <div class="ai-item-why">${i.summary}</div>
+      </div>`).join('')
     :`<div class="content-block">${text}</div>`;
 }
 
 // ===================== CEO =====================
 async function genCEO(){
+  if(!isSectionOn('ceo')) return;
   showSkeleton('ceoContent');
   const cached=getCached('ceo');
   if(cached){renderCEO(cached);return;}
@@ -866,20 +928,39 @@ function renderCEO(text){
 function renderMainBuiltins(){
   const sections=[];
   if(isSectionOn('problem'))sections.push({id:'problem',label:'Problem Solving',contentId:'problemContent'});
-  if(isSectionOn('sql'))sections.push({id:'sql',label:'LeetCode Daily Question',contentId:'sqlContent'});
+  if(isSectionOn('sql'))sections.push({id:'sql',label:'SQL',contentId:'sqlContent'});
   if(isSectionOn('python'))sections.push({id:'python',label:'Python',contentId:'pyContent'});
   const container=document.getElementById('mainBuiltins');
   if(!sections.length){container.innerHTML='';return;}
-  const cols=sections.map(s=>`<div><div class="section-label">${s.label}</div><div id="${s.contentId}"><div class="empty-state">Loading...</div></div></div>`).join('');
-  container.innerHTML=`<div class="section-full"><div style="display:grid;grid-template-columns:repeat(${sections.length},1fr);gap:22px;">${cols}</div></div>`;
+  const idMap={problemContent:'problem',sqlContent:'sql',pyContent:'python'};
+  const cols=sections.map(s=>{
+    const wrapKey=idMap[s.contentId]||s.id;
+    return `<div id="section_wrap_${wrapKey}" style="display:${isSectionOn(wrapKey)?'block':'none'};width:100%;">
+      <div class="section-full">
+        <div class="section-label">${s.label}</div>
+        <div id="${s.contentId}"><div class="empty-state">Loading...</div></div>
+      </div>
+    </div>`;
+  }).join('');
+  container.innerHTML=`<div class="section-full" style="padding:0;">${cols}</div>`;
 }
 
 async function genQuestions(){
   if(isSectionOn('problem')){
-    const links=parseLinks(ls_get('cfg_problems',''));
-    const url=links.length?pickRandom(links):'https://leetcode.com/problemset/';
-    const el=document.getElementById('problemContent');
-    if(el)el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">Today's challenge</p><a class="q-link" href="${url}" target="_blank" rel="noopener">${url}</a></div>`;
+    const cachedEuler=getCached('euler_daily');
+    if(cachedEuler){
+      renderEulerProblem(cachedEuler);
+    } else {
+      const el=document.getElementById('problemContent');
+      if(el) el.innerHTML='<div class="empty-state">Fetching puzzle...</div>';
+      callAppsScript('euler').then(text=>{
+        setCache('euler_daily',text);
+        renderEulerProblem(text);
+      }).catch(e=>{
+        const el=document.getElementById('problemContent');
+        if(el) el.innerHTML='<div class="content-block" style="color:var(--muted);font-size:15px;">Could not fetch puzzle: '+e.message+'</div>';
+      });
+    }
   }
   if(isSectionOn('sql')){
     // fetch LeetCode daily question
@@ -888,7 +969,7 @@ async function genQuestions(){
       renderLeetcodeDaily(cached);
     } else {
       const el=document.getElementById('sqlContent');
-      if(el) el.innerHTML='<div class="empty-state">Fetching today's LeetCode question...</div>';
+      if(el) el.innerHTML='<div class="empty-state">Fetching LeetCode daily question...</div>';
       callAppsScript('leetcode').then(text=>{
         setCache('leetcode_daily', text);
         renderLeetcodeDaily(text);
@@ -899,12 +980,20 @@ async function genQuestions(){
     }
   }
   if(isSectionOn('python')){
-    const solved=ls_get('solved_py',[]);
-    const links=parseLinks(ls_get('cfg_python',DEFAULT_PY));
-    const unsolved=links.filter(u=>!solved.includes(u));
-    const url=unsolved.length?pickRandom(unsolved):(links[0]||'https://datalemur.com/questions');
-    const el=document.getElementById('pyContent');
-    if(el)el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">${unsolved.length} remaining</p><a class="q-link" href="${url}" target="_blank" rel="noopener">${url}</a><br><button class="mark-done-btn" onclick="markSolved('py','${url}')">Mark done</button></div>`;
+    const cached=getCached('datalemur_daily');
+    if(cached){
+      renderDatalemurQuestion(cached);
+    } else {
+      const el=document.getElementById('pyContent');
+      if(el) el.innerHTML='<div class="empty-state">Fetching DataLemur question...</div>';
+      callAppsScript('datalemur').then(text=>{
+        setCache('datalemur_daily', text);
+        renderDatalemurQuestion(text);
+      }).catch(e=>{
+        const el=document.getElementById('pyContent');
+        if(el) el.innerHTML='<div class="content-block" style="color:var(--muted);font-size:15px;">Could not fetch DataLemur: '+e.message+'</div>';
+      });
+    }
   }
 }
 
@@ -919,156 +1008,69 @@ function renderLeetcodeDaily(text){
   if(!el) return;
   // parse: TITLE: ... URL: ... DIFFICULTY: ... TOPIC: ...
   const getField=k=>{const m=text.match(new RegExp(k+':\s*(.+)'));return m?m[1].trim():'';};
-  const title=getField('TITLE')||'Today's Question';
+  const title=getField('TITLE')||"Today's Question";
   const url=getField('URL')||'https://leetcode.com/problemset/';
-  const difficulty=getField('DIFFICULTY')||'';
-  const topic=getField('TOPIC')||'';
-  const diffColor=difficulty==='Easy'?'#2d5a3d':difficulty==='Medium'?'#c9933a':'#c94040';
+  const difficulty=(getField('DIFFICULTY')||'').replace(/^DIFFICULTY:\s*/i,'');
+  const topic=(getField('TOPIC')||'').replace(/^TOPIC:\s*/i,'');
+  const diffColor='var(--muted)';
   el.innerHTML=`
     <div class="content-block">
       <p style="font-size:16px;font-weight:500;color:var(--ink);margin-bottom:8px;line-height:1.4">${title}</p>
       ${difficulty?`<span style="font-size:13px;color:${diffColor};font-family:'DM Mono',monospace;letter-spacing:1px;margin-right:10px;">${difficulty}</span>`:''}
-      ${topic?`<span style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">${topic}</span>`:''}
+      ${topic?`<span style="font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;">${topic}</span>`:''}
       <br><a class="q-link" href="${url}" target="_blank" rel="noopener" style="margin-top:10px;">${url}</a>
     </div>`;
 }
 
 // ===================== CUSTOM SECTIONS =====================
-function renderMainCustomSections(){
-  const fields=getCustomFields();
-  const container=document.getElementById('mainCustomSections');
-  if(!fields.length){container.innerHTML='';return;}
-  container.innerHTML=fields.map(f=>`
-    <div class="section-full">
-      <div class="section-label">${f.name}</div>
-      <div id="custom_main_${f.id}"><div class="empty-state">Loading...</div></div>
-    </div>`).join('');
+
+
+
+
+
+
+
+
+
+function renderDatalemurQuestion(text){
+  const el=document.getElementById('pyContent');
+  if(!el) return;
+  const getField=k=>{const m=text.match(new RegExp(k+':\\s*(.+)'));return m?m[1].trim():'';};
+  const title=getField('TITLE')||'DataLemur Question';
+  const url=getField('URL')||'https://datalemur.com/questions';
+  const difficulty=getField('DIFFICULTY')||'';
+  const category=(getField('CATEGORY')||'').replace(/^CATEGORY:\s*/i,'');
+  const diffColor='var(--muted)';
+  el.innerHTML=`
+    <div class="content-block">
+      <p style="font-size:16px;font-weight:500;color:var(--ink);margin-bottom:8px;line-height:1.4">${title}</p>
+      ${difficulty?`<span style="font-size:13px;color:${diffColor};font-family:'DM Mono',monospace;letter-spacing:1px;margin-right:10px;">${difficulty}</span>`:''}
+      ${category?`<span style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">${category}</span>`:''}
+      <a class="q-link" href="${url}" target="_blank" rel="noopener">${url}</a>
+    </div>`;
 }
 
-async function genCustomSections(){
-  const fields=getCustomFields();
-  for(const f of fields){
-    const el=document.getElementById('custom_main_'+f.id);
-    if(!el)continue;
-    const links=parseLinks(f.links||'');
-    if(!links.length){el.innerHTML=`<div class="content-block" style="color:var(--muted2);font-size:13px;">No links added yet. Go to Customise Settings to add links for ${f.name}.</div>`;continue;}
-    const solved=ls_get('solved_custom_'+f.id,[]);
-    const unsolved=links.filter(u=>!solved.includes(u));
-    const url=unsolved.length?pickRandom(unsolved):links[0];
-    el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">${unsolved.length} of ${links.length} remaining</p><a class="q-link" href="${url}" target="_blank" rel="noopener">${url}</a><br><button class="mark-done-btn" onclick="markCustomSolved('${f.id}','${url}')">Mark done</button></div>`;
-  }
+function renderEulerProblem(text){
+  const el=document.getElementById('problemContent');
+  if(!el) return;
+  const getField=k=>{const m=text.match(new RegExp(k+':\\s*(.+)'));return m?m[1].trim():'';};
+  const title=getField('TITLE')||'Project Euler Problem';
+  const url=getField('URL')||'https://projecteuler.net/archives';
+  const topic=(getField('TOPIC')||'Problem Solving').replace(/^TOPIC:\s*/i,'');
+  el.innerHTML=`
+    <div class="content-block">
+      <p style="font-size:16px;font-weight:500;color:var(--ink);margin-bottom:8px;line-height:1.4">${title}</p>
+      <span style="font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;">${topic}</span>
+      <a class="q-link" href="${url}" target="_blank" rel="noopener">${url}</a>
+    </div>`;
 }
 
-function markCustomSolved(fieldId,url){
-  const k='solved_custom_'+fieldId;const s=ls_get(k,[]);
-  if(!s.includes(url))s.push(url);ls_set(k,s);
-  showToast('Marked as solved');genCustomSections();
-}
+
 
 // ===================== APPS SCRIPT GENERATOR =====================
-function generateScript(){
-  const email=ls_get('cfg_email','')||'your@email.com';
-  const time=ls_get('cfg_time','8');
-  const rss=ls_get('cfg_rss',selectedRSS)||'https://techcrunch.com/category/artificial-intelligence/feed/';
-  const sqlLinks=JSON.stringify(parseLinks(ls_get('cfg_sql',DEFAULT_SQL)));
-  const pyLinks=JSON.stringify(parseLinks(ls_get('cfg_python',DEFAULT_PY)));
-  const probLinks=JSON.stringify(parseLinks(ls_get('cfg_problems','https://hackerrank.com/domains/algorithms\nhttps://projecteuler.net/archives\nhttps://leetcode.com/problemset/')));
-  const sqlOn=isSectionOn('sql'),pyOn=isSectionOn('python'),probOn=isSectionOn('problem');
-  const customFields=getCustomFields();
-  const customVars=customFields.map(f=>`var CUSTOM_${f.id.toUpperCase()}_LINKS=${JSON.stringify(parseLinks(f.links||''))};`).join('\n');
-  const customEmail=customFields.map(f=>`
-  var cs_${f.id}=getSolved("custom_${f.id}");
-  var cu_${f.id}=CUSTOM_${f.id.toUpperCase()}_LINKS.filter(function(u){return cs_${f.id}.indexOf(u)<0;});
-  var curl_${f.id}=cu_${f.id}.length?pickRandom(cu_${f.id}):(CUSTOM_${f.id.toUpperCase()}_LINKS[0]||'');
-  if(curl_${f.id})body+="${f.name.toUpperCase()} ("+(CUSTOM_${f.id.toUpperCase()}_LINKS.length-cu_${f.id}.length)+"/"+CUSTOM_${f.id.toUpperCase()}_LINKS.length+" done)\\n---\\n"+curl_${f.id}+"\\n\\n";`).join('');
 
-  const script=`// ================================================
-// DAILY DIGEST — Google Apps Script
-// Email: ${email} | Time: ${time}:00 AM
-// ================================================
-// Add ANTHROPIC_KEY in Project Settings > Script Properties
 
-var RECIPIENT="${email}";
-var RSS_URL="${rss}";
-${probOn?`var PROB_LINKS=${probLinks};`:''}
-${sqlOn?`var SQL_LINKS=${sqlLinks};`:''}
-${pyOn?`var PY_LINKS=${pyLinks};`:''}
-${customVars}
 
-function pickRandom(arr){return arr[Math.floor(Math.random()*arr.length)];}
-
-function getOrCreateSheet(){
-  var props=PropertiesService.getScriptProperties();
-  var id=props.getProperty("SHEET_ID");
-  if(id){try{return SpreadsheetApp.openById(id);}catch(e){}}
-  var ss=SpreadsheetApp.create("Daily Digest Tracker");
-  props.setProperty("SHEET_ID",ss.getId());
-  var sh=ss.getActiveSheet();sh.setName("Solved");
-  sh.appendRow(["Type","URL","Date"]);
-  return ss;
-}
-
-function getSolved(type){
-  try{
-    var sh=getOrCreateSheet().getSheetByName("Solved");
-    var data=sh.getDataRange().getValues();
-    return data.slice(1).filter(function(r){return r[0]===type;}).map(function(r){return r[1];});
-  }catch(e){return[];}
-}
-
-function callClaude(prompt,useSearch){
-  var key=PropertiesService.getScriptProperties().getProperty("ANTHROPIC_KEY");
-  var body={model:"claude-sonnet-4-5",max_tokens:1000,messages:[{role:"user",content:prompt}]};
-  if(useSearch)body.tools=[{type:"web_search_20250305",name:"web_search"}];
-  var res=UrlFetchApp.fetch("https://api.anthropic.com/v1/messages",{
-    method:"post",muteHttpExceptions:true,
-    headers:{"x-api-key":key,"anthropic-version":"2023-06-01","content-type":"application/json"},
-    payload:JSON.stringify(body)
-  });
-  var json=JSON.parse(res.getContentText());
-  if(json.content){for(var i=0;i<json.content.length;i++){if(json.content[i].type==="text"&&json.content[i].text.length>20)return json.content[i].text;}}
-  return "Unavailable.";
-}
-
-function fetchAINews(){
-  try{
-    var xml=UrlFetchApp.fetch(RSS_URL,{muteHttpExceptions:true}).getContentText();
-    var items=xml.match(/<item>[\\s\\S]*?<\\/item>/g)||[];
-    return items.slice(0,3).map(function(item){
-      var title=(item.match(/<title><!\\[CDATA\\[(.*?)\\]\\]><\\/title>/)||item.match(/<title>(.*?)<\\/title>/))||['',''];
-      var link=(item.match(/<link>(.*?)<\\/link>/))||['',''];
-      return title[1].trim()+" - "+link[1].trim();
-    }).join("\\n");
-  }catch(e){return callClaude("List 3 top AI news headlines from today in one line each. No markdown.",true);}
-}
-
-function sendDailyEmail(){
-  var today=new Date().toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
-  var vocab=callClaude("Generate 2 business vocabulary words for interviews. For each: word, definition (1 sentence), 3 example sentences. Plain text, no markdown.");
-  var ceo=callClaude("One CEO daily habit: who, what, when, result, one adoption tip. Plain text, concise.");
-  var news=fetchAINews();
-  var body="Good morning!\\n\\n"+today+"\\n================================================\\n\\n";
-  body+="VOCABULARY\\n---\\n"+vocab+"\\n\\n";
-  body+="AI UPDATES\\n---\\n"+news+"\\n\\n";
-  body+="CEO HABIT\\n---\\n"+ceo+"\\n\\n";
-  ${probOn?'var probUrl=pickRandom(PROB_LINKS);\n  body+="PROBLEM OF THE DAY\\n---\\n"+probUrl+"\\n\\n";':''}
-  ${sqlOn?'var sqlSolved=getSolved("SQL");var sqlUnsolved=SQL_LINKS.filter(function(u){return sqlSolved.indexOf(u)<0;});var sqlUrl=sqlUnsolved.length?pickRandom(sqlUnsolved):SQL_LINKS[0];\n  body+="SQL ("+(SQL_LINKS.length-sqlUnsolved.length)+"/"+SQL_LINKS.length+" done)\\n---\\n"+sqlUrl+"\\n\\n";':''}
-  ${pyOn?'var pySolved=getSolved("Python");var pyUnsolved=PY_LINKS.filter(function(u){return pySolved.indexOf(u)<0;});var pyUrl=pyUnsolved.length?pickRandom(pyUnsolved):PY_LINKS[0];\n  body+="PYTHON ("+(PY_LINKS.length-pyUnsolved.length)+"/"+PY_LINKS.length+" done)\\n---\\n"+pyUrl+"\\n\\n";':''}
-  ${customEmail}
-  body+="================================================\\nSent at ${time}:00 AM";
-  GmailApp.sendEmail(RECIPIENT,"Daily Digest - "+today,body);
-}`;
-
-  document.getElementById('scriptContent').textContent=script;
-  document.getElementById('scriptBox').classList.add('show');
-}
-
-function copyScript(){
-  navigator.clipboard.writeText(document.getElementById('scriptContent').textContent).then(()=>{
-    const btn=document.querySelector('.copy-btn');btn.textContent='Copied!';
-    setTimeout(()=>btn.textContent='Copy all',2000);
-  });
-}
 
 // ===================== DEFAULTS =====================
 const DEFAULT_SQL=`https://leetcode.com/problems/recyclable-and-low-fat-products/
@@ -1093,7 +1095,6 @@ https://datalemur.com/questions/top-profitable-drugs`;
   applyTheme(savedTheme);
   updateMasthead();
   renderMainBuiltins();
-  renderMainCustomSections();
   autoPopulate();
 })();
 </script>
