@@ -100,7 +100,7 @@ body.theme-nature .nature-leaves{opacity:1;}
 .word-pos{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin:3px 0 7px;}
 .word-def{font-size:15px;color:var(--ink);line-height:1.65;margin-bottom:8px;}
 .word-examples{list-style:none;}
-.word-examples li{font-size:13px;color:var(--muted);line-height:1.65;padding:3px 0 3px 12px;border-left:2px solid var(--gold-border);margin-bottom:5px;font-style:italic;}
+.word-examples li{font-size:16px;color:var(--muted);line-height:1.75;padding:5px 0 5px 14px;border-left:2px solid var(--gold-border);margin-bottom:8px;font-style:italic;}
 .content-block{font-size:14px;line-height:1.8;color:var(--ink);}
 .content-block .label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
 .q-link{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);border-bottom:1px solid rgba(45,90,61,0.3);text-decoration:none;margin-top:8px;transition:color 0.15s;}
@@ -475,6 +475,10 @@ textarea.be-input{resize:vertical;min-height:90px;font-size:12px;line-height:1.6
         </div>
       </div>
       <input class="be-input" id="cfg_rss" placeholder="Or paste any custom RSS feed URL..."/>
+      <div style="margin-top:10px;">
+        <div class="be-label" style="margin-top:8px;">Article listing page URL <span class="be-hint">e.g. nytimes.com/spotlight/artificial-intelligence — Claude picks 2-3 articles and summarises them</span></div>
+        <input class="be-input" id="cfg_ai_url" placeholder="https://www.nytimes.com/spotlight/artificial-intelligence"/>
+      </div>
     </div>
 
     <!-- BUILT-IN SECTIONS -->
@@ -490,7 +494,7 @@ textarea.be-input{resize:vertical;min-height:90px;font-size:12px;line-height:1.6
           </div>
           <div id="body_problem" class="be-section-body" style="margin-top:12px;">
             <div class="be-hint" style="margin-bottom:6px;font-size:12px;">One URL per line. One is picked randomly each day.</div>
-            <textarea class="be-input" id="cfg_problems" placeholder="https://hackerrank.com/challenges/example&#10;https://projecteuler.net/problem=1&#10;https://leetcode.com/problems/two-sum/"></textarea>
+            <textarea class="be-input" id="cfg_problems" placeholder="One URL per line:&#10;https://hackerrank.com/challenges/example&#10;https://projecteuler.net/problem=1&#10;https://leetcode.com/problems/two-sum/"></textarea>
           </div>
         </div>
 
@@ -556,13 +560,18 @@ function todayKey(){
 
 // ===================== 24HR CACHE =====================
 function getCached(key){
-  const entry=ls_get('cache_'+key,null);
-  if(!entry)return null;
-  if(entry.date!==todayKey())return null; // expired — new day
-  return entry.value;
+  try{
+    const raw=localStorage.getItem('digest_cache_'+key);
+    if(!raw)return null;
+    const entry=JSON.parse(raw);
+    if(!entry||entry.date!==todayKey())return null;
+    return entry.value;
+  }catch(e){return null;}
 }
 function setCache(key,value){
-  ls_set('cache_'+key,{date:todayKey(),value});
+  try{
+    localStorage.setItem('digest_cache_'+key, JSON.stringify({date:todayKey(),value:value}));
+  }catch(e){}
 }
 
 // ===================== DATE DISPLAY =====================
@@ -617,7 +626,7 @@ function isSectionOn(key){return ls_get('sec_enabled_'+key,true);}
 let selectedRSS='https://techcrunch.com/category/artificial-intelligence/feed/';
 
 function loadSettings(){
-  ['name','email','apikey','time','rss','problems','sql','python'].forEach(f=>{
+  ['name','email','apikey','time','rss','ai_url','problems','sql','python'].forEach(f=>{
     const el=document.getElementById('cfg_'+f);
     if(!el)return;
     const v=ls_get('cfg_'+f,'');
@@ -640,7 +649,7 @@ function loadSettings(){
 }
 
 function saveSettings(){
-  ['name','email','apikey','time','rss','problems','sql','python'].forEach(f=>{
+  ['name','email','apikey','time','rss','ai_url','problems','sql','python'].forEach(f=>{
     const el=document.getElementById('cfg_'+f);
     if(el)ls_set('cfg_'+f,el.value);
   });
@@ -718,19 +727,24 @@ function extract(text,key){const m=text.match(new RegExp(key+':\\s*(.+)'));retur
 function showSkeleton(id){const el=document.getElementById(id);if(el)el.innerHTML='<div class="skel-line skeleton medium"></div><div class="skel-line skeleton short"></div><div class="skel-line skeleton medium"></div><div class="skel-line skeleton short"></div>';}
 function getApiKey(){return ls_get('cfg_apikey','')||'';}
 
-async function callClaude(prompt,useSearch=false){
-  const key=getApiKey();
-  if(!key)throw new Error('No API key — go to Customise Settings.');
-  const body={model:'claude-sonnet-4-5',max_tokens:1200,messages:[{role:'user',content:prompt}]};
-  if(useSearch)body.tools=[{type:'web_search_20250305',name:'web_search'}];
-  const res=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},
-    body:JSON.stringify(body)
-  });
-  const data=await res.json();
-  if(data.error)throw new Error(data.error.message);
-  for(const block of data.content){if(block.type==='text'&&block.text.length>20)return block.text;}
-  return 'Content unavailable.';
+const PROXY_URL = 'https://script.google.com/macros/s/AKfycbxLY7iZEZ9kL2BKYraGqgB2SSn-7saH-M0E9w71PxUVFK3DrLLCqC-BP4_KRtYw0n6bYA/exec';
+
+async function callAppsScript(type, extraParam){
+  let url = PROXY_URL + '?type=' + type;
+  if(extraParam) url += '&url=' + encodeURIComponent(extraParam);
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('Server error: ' + res.status);
+  const text = await res.text();
+  if(!text || text.length < 10) throw new Error('Empty response — check Apps Script deployment');
+  return text;
+}
+
+// kept for any legacy calls
+async function callClaude(prompt, useSearch=false){
+  let type = 'vocab';
+  if(prompt.includes('CEO') || prompt.includes('founder')) type = 'ceo';
+  else if(prompt.includes('AI') || prompt.includes('news')) type = 'ai';
+  return callAppsScript(type);
 }
 
 // ===================== AUTO-POPULATE ON LOAD =====================
@@ -788,10 +802,7 @@ async function genVocab(){
   showSkeleton('vocabContent');
   const cached=getCached('vocab');
   if(cached){renderVocab(cached);return;}
-  const text=await callClaude(
-    'Generate exactly 2 advanced business vocabulary words perfect for interviews and professional conversations. '+
-    'For each word output in this exact format:\nWORD: [word]\nPOS: [part of speech]\nDEF: [1-2 sentence definition]\nEX1: [example sentence]\nEX2: [example sentence]\nEX3: [example sentence]\n---\nNo extra commentary. Start immediately.'
-  );
+  const text=await callAppsScript('vocab');
   setCache('vocab',text);
   renderVocab(text);
 }
@@ -815,12 +826,11 @@ async function genAI(){
   const cached=getCached('ai');
   if(cached){renderAI(cached);return;}
   try{
-    const text=await callClaude(
-      'Search for the top 3 AI news stories from the last 24 hours. '+
-      'For each story output in this exact format:\nTITLE: [headline in under 10 words]\nWHY: [one sentence on why it matters]\n---\nNo intro. Start immediately with TITLE.',true);
+    const aiUrl=ls_get('cfg_ai_url','');
+    const text=await callAppsScript('ai', aiUrl||'detailed');
     setCache('ai',text);
     renderAI(text);
-  }catch(e){document.getElementById('aiContent').innerHTML=`<div class="content-block" style="color:var(--muted)">Could not fetch: ${e.message}</div>`;}
+  }catch(e){document.getElementById('aiContent').innerHTML=`<div class="content-block" style="color:var(--muted);font-size:15px;">Could not fetch AI updates: ${e.message}</div>`;}
 }
 function renderAI(text){
   const items=text.split('---').map(b=>b.trim()).filter(Boolean).slice(0,3).map(block=>{
@@ -837,9 +847,7 @@ async function genCEO(){
   showSkeleton('ceoContent');
   const cached=getCached('ceo');
   if(cached){renderCEO(cached);return;}
-  const text=await callClaude(
-    'Share one powerful daily habit of a well-known CEO or founder. '+
-    'Output in this exact format:\nWHO: [name and company]\nHABIT: [what they do and when — 2 sentences]\nRESULT: [documented outcome — 1 sentence]\nTIP: [how to adopt it today — 1 sentence]\nNo extra text. Start immediately.');
+  const text=await callAppsScript('ceo');
   setCache('ceo',text);
   renderCEO(text);
 }
@@ -858,7 +866,7 @@ function renderCEO(text){
 function renderMainBuiltins(){
   const sections=[];
   if(isSectionOn('problem'))sections.push({id:'problem',label:'Problem Solving',contentId:'problemContent'});
-  if(isSectionOn('sql'))sections.push({id:'sql',label:'SQL',contentId:'sqlContent'});
+  if(isSectionOn('sql'))sections.push({id:'sql',label:'LeetCode Daily Question',contentId:'sqlContent'});
   if(isSectionOn('python'))sections.push({id:'python',label:'Python',contentId:'pyContent'});
   const container=document.getElementById('mainBuiltins');
   if(!sections.length){container.innerHTML='';return;}
@@ -871,15 +879,24 @@ async function genQuestions(){
     const links=parseLinks(ls_get('cfg_problems',''));
     const url=links.length?pickRandom(links):'https://leetcode.com/problemset/';
     const el=document.getElementById('problemContent');
-    if(el)el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">Today's challenge</p><a class="q-link" href="${url}" target="_blank">${shortenUrl(url)} &rarr;</a></div>`;
+    if(el)el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">Today's challenge</p><a class="q-link" href="${url}" target="_blank" rel="noopener">${url}</a></div>`;
   }
   if(isSectionOn('sql')){
-    const solved=ls_get('solved_sql',[]);
-    const links=parseLinks(ls_get('cfg_sql',DEFAULT_SQL));
-    const unsolved=links.filter(u=>!solved.includes(u));
-    const url=unsolved.length?pickRandom(unsolved):(links[0]||'https://leetcode.com/study-plan/sql-free-50/');
-    const el=document.getElementById('sqlContent');
-    if(el)el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">${unsolved.length} remaining</p><a class="q-link" href="${url}" target="_blank">${shortenUrl(url)} &rarr;</a><br><button class="mark-done-btn" onclick="markSolved('sql','${url}')">Mark done</button></div>`;
+    // fetch LeetCode daily question
+    const cached = getCached('leetcode_daily');
+    if(cached){
+      renderLeetcodeDaily(cached);
+    } else {
+      const el=document.getElementById('sqlContent');
+      if(el) el.innerHTML='<div class="empty-state">Fetching today's LeetCode question...</div>';
+      callAppsScript('leetcode').then(text=>{
+        setCache('leetcode_daily', text);
+        renderLeetcodeDaily(text);
+      }).catch(e=>{
+        const el=document.getElementById('sqlContent');
+        if(el) el.innerHTML='<div class="content-block" style="color:var(--muted);font-size:15px;">Could not fetch LeetCode daily: '+e.message+'</div>';
+      });
+    }
   }
   if(isSectionOn('python')){
     const solved=ls_get('solved_py',[]);
@@ -887,7 +904,7 @@ async function genQuestions(){
     const unsolved=links.filter(u=>!solved.includes(u));
     const url=unsolved.length?pickRandom(unsolved):(links[0]||'https://datalemur.com/questions');
     const el=document.getElementById('pyContent');
-    if(el)el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">${unsolved.length} remaining</p><a class="q-link" href="${url}" target="_blank">${shortenUrl(url)} &rarr;</a><br><button class="mark-done-btn" onclick="markSolved('py','${url}')">Mark done</button></div>`;
+    if(el)el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">${unsolved.length} remaining</p><a class="q-link" href="${url}" target="_blank" rel="noopener">${url}</a><br><button class="mark-done-btn" onclick="markSolved('py','${url}')">Mark done</button></div>`;
   }
 }
 
@@ -895,6 +912,25 @@ function markSolved(type,url){
   const k='solved_'+type;const s=ls_get(k,[]);
   if(!s.includes(url))s.push(url);ls_set(k,s);
   showToast('Marked as solved');genQuestions();
+}
+
+function renderLeetcodeDaily(text){
+  const el=document.getElementById('sqlContent');
+  if(!el) return;
+  // parse: TITLE: ... URL: ... DIFFICULTY: ... TOPIC: ...
+  const getField=k=>{const m=text.match(new RegExp(k+':\s*(.+)'));return m?m[1].trim():'';};
+  const title=getField('TITLE')||'Today's Question';
+  const url=getField('URL')||'https://leetcode.com/problemset/';
+  const difficulty=getField('DIFFICULTY')||'';
+  const topic=getField('TOPIC')||'';
+  const diffColor=difficulty==='Easy'?'#2d5a3d':difficulty==='Medium'?'#c9933a':'#c94040';
+  el.innerHTML=`
+    <div class="content-block">
+      <p style="font-size:16px;font-weight:500;color:var(--ink);margin-bottom:8px;line-height:1.4">${title}</p>
+      ${difficulty?`<span style="font-size:13px;color:${diffColor};font-family:'DM Mono',monospace;letter-spacing:1px;margin-right:10px;">${difficulty}</span>`:''}
+      ${topic?`<span style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">${topic}</span>`:''}
+      <br><a class="q-link" href="${url}" target="_blank" rel="noopener" style="margin-top:10px;">${url}</a>
+    </div>`;
 }
 
 // ===================== CUSTOM SECTIONS =====================
@@ -919,7 +955,7 @@ async function genCustomSections(){
     const solved=ls_get('solved_custom_'+f.id,[]);
     const unsolved=links.filter(u=>!solved.includes(u));
     const url=unsolved.length?pickRandom(unsolved):links[0];
-    el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">${unsolved.length} of ${links.length} remaining</p><a class="q-link" href="${url}" target="_blank">${shortenUrl(url)} &rarr;</a><br><button class="mark-done-btn" onclick="markCustomSolved('${f.id}','${url}')">Mark done</button></div>`;
+    el.innerHTML=`<div class="content-block"><p style="margin-bottom:8px;font-size:12px;color:var(--muted)">${unsolved.length} of ${links.length} remaining</p><a class="q-link" href="${url}" target="_blank" rel="noopener">${url}</a><br><button class="mark-done-btn" onclick="markCustomSolved('${f.id}','${url}')">Mark done</button></div>`;
   }
 }
 
