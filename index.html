@@ -668,10 +668,12 @@ function switchPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',['main','backend'][i]===name));
   document.getElementById('page-'+name).classList.add('active');
-  if(name==='backend'){loadSettings();}
+  if(name==='backend'){ loadSettings(); }
   if(name==='main'){
     updateMasthead();
     renderMainBuiltins();
+    // Re-fetch AI if cache was cleared while on settings page
+    if(!getCached('tldr_news') && isSectionOn('ai')){ genAI(); }
     autoPopulate();
   }
 }
@@ -744,8 +746,12 @@ function saveEmailAndNotify(){
 function saveSettings(){
   ['name','email','time','vocab_category','news_category','python'].forEach(f=>{
     const el=document.getElementById('cfg_'+f);
-    if(el)ls_set('cfg_'+f,el.value);
+    if(el) ls_set('cfg_'+f, el.value);
   });
+
+  // Clear news cache when categories might have changed
+  localStorage.removeItem('digest_cache_tldr_news');
+
   updateMasthead();
   showToast('Settings saved');
 }
