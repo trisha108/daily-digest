@@ -111,7 +111,6 @@ body.theme-nature .nature-leaves{opacity:1;}
 .word-examples li{font-size:16px;color:var(--muted);line-height:1.75;padding:5px 0 5px 14px;border-left:2px solid var(--gold-border);margin-bottom:8px;font-style:italic;}
 .content-block{font-size:14px;line-height:1.8;color:var(--ink);}
 .content-block .label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
-.q-link{display:block;font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);border-bottom:1px solid rgba(45,90,61,0.3);text-decoration:none;margin-top:10px;margin-bottom:6px;padding:6px 0;word-break:break-all;transition:color 0.15s;}
 .q-link:hover{color:var(--gold);}
 .ai-item{padding:10px 0;border-bottom:1px dashed var(--rule);}
 .ai-item:last-child{border-bottom:none;}
@@ -499,9 +498,7 @@ textarea.be-input{resize:vertical;min-height:90px;font-size:12px;line-height:1.6
           <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;">
             <input type="checkbox" value="misc" onchange="onNewsCategoryChange()" style="accent-color:var(--gold);width:16px;height:16px;"> 🎁 Miscellaneous
           </label>
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;">
-            <input type="checkbox" value="tech" onchange="onNewsCategoryChange()" style="accent-color:var(--gold);width:16px;height:16px;"> ⚡ Quick Links
-          </label>
+          
         </div>
       </div>
     </div>
@@ -946,7 +943,7 @@ function renderAI(raw){
   if(data.error){
     el.innerHTML = `<div class="content-block" style="color:var(--muted);font-size:15px;">${data.error}</div>`; return;
   }
-  const CATEGORY_ORDER = ['ai','science','engineering','misc','tech'];
+  const CATEGORY_ORDER = ['ai','science','engineering','misc'];
   let html = '';
   CATEGORY_ORDER.forEach(function(cat){
     if(!data[cat] || !data[cat].items || !data[cat].items.length) return;
