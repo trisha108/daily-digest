@@ -480,20 +480,29 @@ textarea.be-input{resize:vertical;min-height:90px;font-size:12px;line-height:1.6
       </div>
     </div>
 
-    <!-- AI NEWS -->
+
+<!-- TLDR NEWS CATEGORIES -->
     <div class="be-section">
-      <div class="be-section-header"><div class="be-section-title">News Source</div></div>
-
-
+      <div class="be-section-header"><div class="be-section-title">News Categories</div></div>
       <div class="be-row" style="margin-top:10px;">
-        <div class="be-label">News category <span class="be-hint">Selects the RSS feed automatically</span></div>
-        <select class="be-select" id="cfg_news_category" onchange="onNewsCategoryChange(this)">
-          <option value="ai">AI News (default)</option>
-          <option value="tech">Tech News</option>
-          <option value="business">Business and Finance</option>
-          <option value="world">World News</option>
-
-        </select>
+        <div class="be-label">Select categories <span class="be-hint">Pick one or more — 3 articles each</span></div>
+        <div id="newsCategoryPicker" style="display:flex;flex-direction:column;gap:8px;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;">
+            <input type="checkbox" value="ai" onchange="onNewsCategoryChange()" style="accent-color:var(--gold);width:16px;height:16px;"> 🚀 Headlines &amp; Launches
+          </label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;">
+            <input type="checkbox" value="science" onchange="onNewsCategoryChange()" style="accent-color:var(--gold);width:16px;height:16px;"> 🧠 Deep Dives &amp; Analysis
+          </label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;">
+            <input type="checkbox" value="engineering" onchange="onNewsCategoryChange()" style="accent-color:var(--gold);width:16px;height:16px;"> 🧑‍💻 Engineering &amp; Research
+          </label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;">
+            <input type="checkbox" value="misc" onchange="onNewsCategoryChange()" style="accent-color:var(--gold);width:16px;height:16px;"> 🎁 Miscellaneous
+          </label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;">
+            <input type="checkbox" value="tech" onchange="onNewsCategoryChange()" style="accent-color:var(--gold);width:16px;height:16px;"> ⚡ Quick Links
+          </label>
+        </div>
       </div>
     </div>
 
@@ -709,9 +718,10 @@ function loadSettings(){
     if(wrapper) wrapper.style.display=on?'':'none';
   });;
   // rss url field removed
-  const nc=ls_get('cfg_news_category','ai');
-  const ncEl=document.getElementById('cfg_news_category');
-  if(ncEl) ncEl.value=nc;
+  const savedCats = ls_get('cfg_news_categories', ['ai']);
+  document.querySelectorAll('#newsCategoryPicker input[type=checkbox]').forEach(function(b){
+    b.checked = savedCats.indexOf(b.value) > -1;
+  });
   const vc=ls_get('cfg_vocab_category','business');
   const vcEl=document.getElementById('cfg_vocab_category');
   if(vcEl) vcEl.value=vc;
@@ -769,17 +779,20 @@ var NEWS_CATEGORY_FEEDS = {
   ]
 }
 
-function onNewsCategoryChange(sel){
-  const cat = sel.value;
-  ls_set('cfg_news_category', cat);
-  // Clear all category caches so new one fetches fresh
-  ['ai','tech','business','world'].forEach(c=>{
-    localStorage.removeItem('digest_cache_ai_'+c);
-  });
-  // If on main page, regenerate AI section immediately
+function onNewsCategoryChange(){
+  const selected = getSelectedNewsCategories();
+  ls_set('cfg_news_categories', selected);
+  localStorage.removeItem('digest_cache_tldr_news');
   if(document.getElementById('page-main').classList.contains('active')){
     genAI();
   }
+}
+
+function getSelectedNewsCategories(){
+  const boxes = document.querySelectorAll('#newsCategoryPicker input[type=checkbox]');
+  const selected = [];
+  boxes.forEach(function(b){ if(b.checked) selected.push(b.value); });
+  return selected.length ? selected : ['ai']; // default to AI if nothing checked
 }
 
 // ===================== CUSTOM FIELDS =====================
@@ -856,7 +869,7 @@ async function autoPopulate(force=false){
 }
 
 function forceRefresh(){
-  ['digest_cache_full_generated','digest_cache_vocab','digest_cache_ceo','digest_cache_ai','digest_cache_leetcode_daily','digest_cache_datalemur_daily','digest_cache_euler_daily','digest_cache_ai_ai','digest_cache_ai_tech','digest_cache_ai_business','digest_cache_ai_world'].forEach(k=>localStorage.removeItem(k));
+ ['digest_cache_full_generated','digest_cache_vocab','digest_cache_ceo','digest_cache_tldr_news','digest_cache_leetcode_daily','digest_cache_datalemur_daily','digest_cache_euler_daily'].forEach(k=>localStorage.removeItem(k));
   autoPopulate(true);
 }
 
@@ -865,12 +878,7 @@ function renderFromCache(){
   if(vocab) renderVocab(vocab);
   const ceo=getCached('ceo');
   if(ceo) renderCEO(ceo);
-  const newsCatR=ls_get('cfg_news_category','ai');
-  const aiCacheKey='ai_'+newsCatR;
-  const catLabelsR={ai:'News — AI',tech:'News — Tech',business:'News — Business',world:'News — World'};
-  const lblR=document.getElementById('aiSectionLabel');
-  if(lblR) lblR.textContent=catLabelsR[newsCatR]||'News';
-  const ai=getCached(aiCacheKey);
+  const ai = getCached('tldr_news');
   if(ai) renderAI(ai);
   const lc=getCached('leetcode_daily');
   if(lc) renderLeetcodeDaily(lc);
@@ -911,36 +919,46 @@ function renderVocab(text){
 async function genAI(){
   if(!isSectionOn('ai')) return;
   showSkeleton('aiContent');
-  const newsCat=ls_get('cfg_news_category','ai');
-  const catLabels={ai:'News — AI',tech:'News — Tech',business:'News — Business',world:'News — World'};
-  const lbl=document.getElementById('aiSectionLabel');
-  if(lbl) lbl.textContent=catLabels[newsCat]||'News';
-  const cacheKey='ai_'+newsCat;
-  const cached=getCached(cacheKey);
-  if(cached){renderAI(cached);return;}
+  const cached = getCached('tldr_news');
+  if(cached){ renderAI(cached); return; }
+  const cats = ls_get('cfg_news_categories', ['ai']);
   try{
-    const text=await callAppsScript('ai', newsCat, 'category');
-    setCache(cacheKey,text);
+    const text = await callAppsScript('ai', cats.join(','), 'categories');
+    setCache('tldr_news', text);
     renderAI(text);
-  }catch(e){document.getElementById('aiContent').innerHTML=`<div class="content-block" style="color:var(--muted);font-size:15px;">Could not fetch AI updates: ${e.message}</div>`;}
+  } catch(e) {
+    document.getElementById('aiContent').innerHTML =
+      `<div class="content-block" style="color:var(--muted);font-size:15px;">Could not fetch news: ${e.message}</div>`;
+  }
 }
-function renderAI(text){
-  const items=text.split('---').map(b=>b.trim()).filter(Boolean).slice(0,3).map(block=>{
-    const get=k=>{const m=block.match(new RegExp(k+':\\s*(.+)'));return m?m[1].trim():'';};
-    const title=get('TITLE');
-    const summary=get('SUMMARY');
-    const date=get('DATE');
-    const why=get('WHY');
-    return{title, summary:summary||why, date};
-  }).filter(i=>i.title);
-  document.getElementById('aiContent').innerHTML=items.length
-    ?items.map(i=>`
-      <div class="ai-item">
-        <div class="ai-item-title">${i.title}</div>
-        ${i.date?`<div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted2);margin:3px 0 5px;">${i.date}</div>`:''}
-        <div class="ai-item-why">${i.summary}</div>
-      </div>`).join('')
-    :`<div class="content-block">${text}</div>`;
+function renderAI(raw){
+  const el = document.getElementById('aiContent');
+  let data;
+  try { data = JSON.parse(raw); } catch(e) {
+    el.innerHTML = `<div class="content-block">${raw}</div>`; return;
+  }
+  if(data.error){
+    el.innerHTML = `<div class="content-block" style="color:var(--muted);font-size:15px;">${data.error}</div>`; return;
+  }
+  const CATEGORY_ORDER = ['ai','science','engineering','misc','tech'];
+  let html = '';
+  CATEGORY_ORDER.forEach(function(cat){
+    if(!data[cat] || !data[cat].items || !data[cat].items.length) return;
+    const section = data[cat];
+    html += `<div style="margin-bottom:18px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+                  color:var(--gold);margin-bottom:10px;padding-bottom:6px;
+                  border-bottom:1px solid var(--gold-border);">${section.heading}</div>`;
+    section.items.forEach(function(item){
+      html += `<div class="ai-item">
+        <div class="ai-item-title">${item.title}</div>
+        ${item.summary ? `<div class="ai-item-why">${item.summary}</div>` : ''}
+        ${item.url ? `<a class="q-link" href="${item.url}" target="_blank" rel="noopener">${item.url}</a>` : ''}
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  el.innerHTML = html || '<div class="empty-state">No articles found</div>';
 }
 
 // ===================== CEO =====================
